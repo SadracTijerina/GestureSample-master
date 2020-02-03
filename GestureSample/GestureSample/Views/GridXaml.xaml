@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+				x:Class="GestureSample.Views.GridXaml"
+
+				Title="Grid Sample"
+	>
+
+	<RelativeLayout>
+		<mr:Grid
+			RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.65}"
+
+			BackgroundColor="#808080"
+			ColumnSpacing="5"
+
+			TappingCommand="{Binding TappingCommand}"
+			TappedCommand="{Binding TappedCommand}"
+			LongPressingCommand="{Binding LongPressingCommand}"
+			LongPressedCommand="{Binding LongPressedCommand}"
+			PanningCommand="{Binding PanningCommand}"
+			PannedCommand="{Binding PannedCommand}"
+			>
+
+			<mr:Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+			</mr:Grid.RowDefinitions>
+
+			<mr:Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</mr:Grid.ColumnDefinitions>
+
+            <Image x:Name="ImageCell00" Source="{Binding ImageCell00}" mr:Grid.Row="0" mr:Grid.Column="0" BackgroundColor="#000000" />
+            <Image x:Name="ImageCell01" Source="{Binding ImageCell01}" mr:Grid.Row="0" mr:Grid.Column="1" BackgroundColor="#32a852" />
+            <Image x:Name="ImageCell02" Source="{Binding ImageCell02}" mr:Grid.Row="0" mr:Grid.Column="2" BackgroundColor="#a83232" />
+			<Image x:Name="ImageCell10" Source="{Binding ImageCell10}" mr:Grid.Row="1" mr:Grid.Column="0" BackgroundColor="#000000" />
+			<Image x:Name="ImageCell11" Source="{Binding ImageCell11}" mr:Grid.Row="1" mr:Grid.Column="1" BackgroundColor="#000000" />
+			<Image x:Name="ImageCell12" Source="{Binding ImageCell12}" mr:Grid.Row="1" mr:Grid.Column="2" BackgroundColor="#000000" />
+			<Image x:Name="ImageCell20" Source="{Binding ImageCell20}" mr:Grid.Row="2" mr:Grid.Column="0" BackgroundColor="#000000" />
+			<Image x:Name="ImageCell21" Source="{Binding ImageCell21}" mr:Grid.Row="2" mr:Grid.Column="1" BackgroundColor="#000000" />
+			<Image x:Name="ImageCell22" Source="{Binding ImageCell22}" mr:Grid.Row="2" mr:Grid.Column="2" BackgroundColor="#000000" />
+		</mr:Grid>
+
+		<ScrollView
+				RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.65}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.35}">
+			<Label Text="{Binding Text}" />
+		</ScrollView>
+	</RelativeLayout>
+</ContentPage>
