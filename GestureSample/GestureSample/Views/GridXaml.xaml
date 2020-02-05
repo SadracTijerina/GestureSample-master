@@ -37,15 +37,15 @@
 				<ColumnDefinition Width="*" />
 			</mr:Grid.ColumnDefinitions>
 
-            <Image x:Name="ImageCell00" Source="{Binding ImageCell00}" mr:Grid.Row="0" mr:Grid.Column="0" BackgroundColor="#000000" />
-            <Image x:Name="ImageCell01" Source="{Binding ImageCell01}" mr:Grid.Row="0" mr:Grid.Column="1" BackgroundColor="#32a852" />
-            <Image x:Name="ImageCell02" Source="{Binding ImageCell02}" mr:Grid.Row="0" mr:Grid.Column="2" BackgroundColor="#a83232" />
-			<Image x:Name="ImageCell10" Source="{Binding ImageCell10}" mr:Grid.Row="1" mr:Grid.Column="0" BackgroundColor="#000000" />
-			<Image x:Name="ImageCell11" Source="{Binding ImageCell11}" mr:Grid.Row="1" mr:Grid.Column="1" BackgroundColor="#000000" />
-			<Image x:Name="ImageCell12" Source="{Binding ImageCell12}" mr:Grid.Row="1" mr:Grid.Column="2" BackgroundColor="#000000" />
-			<Image x:Name="ImageCell20" Source="{Binding ImageCell20}" mr:Grid.Row="2" mr:Grid.Column="0" BackgroundColor="#000000" />
-			<Image x:Name="ImageCell21" Source="{Binding ImageCell21}" mr:Grid.Row="2" mr:Grid.Column="1" BackgroundColor="#000000" />
-			<Image x:Name="ImageCell22" Source="{Binding ImageCell22}" mr:Grid.Row="2" mr:Grid.Column="2" BackgroundColor="#000000" />
+            <mr:Image Source="{Binding ImageCell00}" mr:Grid.Row="0" mr:Grid.Column="0" BackgroundColor="#000000" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell01}" mr:Grid.Row="0" mr:Grid.Column="1" BackgroundColor="#32a852" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell02}" mr:Grid.Row="0" mr:Grid.Column="2" BackgroundColor="#a83232" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell10}" mr:Grid.Row="1" mr:Grid.Column="0" BackgroundColor="#3254a8" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell11}" mr:Grid.Row="1" mr:Grid.Column="1" BackgroundColor="#ffffff" Panning="Image_Panning" Panned="tradeImages"  />
+            <mr:Image Source="{Binding ImageCell12}" mr:Grid.Row="1" mr:Grid.Column="2" BackgroundColor="#a8a832" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell20}" mr:Grid.Row="2" mr:Grid.Column="0" BackgroundColor="#a87132" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell21}" mr:Grid.Row="2" mr:Grid.Column="1" BackgroundColor="#a83298" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image Source="{Binding ImageCell22}" mr:Grid.Row="2" mr:Grid.Column="2" BackgroundColor="#995f5f" Panning="Image_Panning" Panned="tradeImages" />
 		</mr:Grid>
 
 		<ScrollView

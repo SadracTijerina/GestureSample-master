@@ -87,10 +87,15 @@ namespace GestureSample.ViewModels
 			base.OnLongPressing(e);
 
 			initXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
+			//On APA app it would probably be * 5 cause there is about 5 rows I believe
 			inityCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
 		}
 
 
+		/*
+		 Trying to figure out how to swap the grids struggling to access xaml properties. Probably doesn't matter, since APA doesn't have it in XAML form
+			Should probably try to make attempts implement this into APA already.
+		*/
 		private void tradeImages () {
 			AddText("Initial (x,y): ({0},{1}) Final (x,y): ({2},{3}", initXCord, inityCord, finalXCord, finalYCord);
 
@@ -99,16 +104,14 @@ namespace GestureSample.ViewModels
 
 			string initialImage = "ImageCell" + xString + yString;
 
+			//NotifyPropertyChanged(initialImage);
+
 			xString = finalXCord.ToString();
 			yString = finalYCord.ToString();
 
 			string finalImage = "ImageCell" + xString + yString;
 
-			/*Trying to figure out how to trade the grids */
-
-
-	
-
+			//NotifyPropertyChanged(finalImage);
 		}
 
 		private void checkGameOver()
