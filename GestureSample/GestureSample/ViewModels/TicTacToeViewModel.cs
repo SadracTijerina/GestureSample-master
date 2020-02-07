@@ -24,11 +24,11 @@ namespace GestureSample.ViewModels
 		public string ImageCell21 { get { return ValueToImage(board[2][1]); }  }
 		public string ImageCell22 { get { return ValueToImage(board[2][2]); } }
 
-		public int finalXCord { get; set; }
-		public int finalYCord { get; set; }
+		public static int finalXCord { get; set; }
+		public static int finalYCord { get; set; }
 
-		public int initXCord { get; set; }
-		public int inityCord { get; set; }
+		public static int initXCord { get; set; }
+		public static int inityCord { get; set; }
 
 
 		public TicTacToeViewModel()
@@ -60,8 +60,6 @@ namespace GestureSample.ViewModels
 			if (Device.RuntimePlatform == Device.macOS)
 				yCord = 2 - yCord;
 
-
-			checkGameOver();
 		}
 
 		protected override void OnPanning(MR.Gestures.PanEventArgs e)
@@ -71,107 +69,50 @@ namespace GestureSample.ViewModels
 			finalXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
 			finalYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
 
+
+			//var s = e.Sender as MR.Gestures.Image;
+
+			//if (s == null)
+			//{
+			//	return;
+			//}
+
+			////GridXaml.RaiseChild(s);
+
+			//s.TranslationX += e.DeltaDistance.X;
+			//s.TranslationY += e.DeltaDistance.Y;
+
 			//var xCord = e.DeltaDistance.X;
 			//var yCord = e.DeltaDistance.Y;
 		}
 
-		protected override void OnPanned(MR.Gestures.PanEventArgs e)
-		{
-			base.OnPanned(e);
-
-			tradeImages();
-		}
 
 		protected override void OnLongPressing(MR.Gestures.LongPressEventArgs e)
 		{
 			base.OnLongPressing(e);
+			//y:188.57
+			//x:338.66
+			//AddText("Position width: " + e.ViewPosition.Width);
+			AddText("X: " + e.Touches[0].X);
+			//AddText("Position height: " + )
+			AddText("Y: " + e.Touches[0].Y);
 
 			initXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
 			//On APA app it would probably be * 5 cause there is about 5 rows I believe
 			inityCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
 		}
 
+		protected override void OnPanned(MR.Gestures.PanEventArgs e)
+		{
+			base.OnPanned(e);
 
-		/*
-		 Trying to figure out how to swap the grids struggling to access xaml properties. Probably doesn't matter, since APA doesn't have it in XAML form
-			Should probably try to make attempts implement this into APA already.
-		*/
-		private void tradeImages () {
-			AddText("Initial (x,y): ({0},{1}) Final (x,y): ({2},{3}", initXCord, inityCord, finalXCord, finalYCord);
-
-			string xString = initXCord.ToString();
-			string yString = inityCord.ToString();
-
-			string initialImage = "ImageCell" + xString + yString;
-
-			//NotifyPropertyChanged(initialImage);
-
-			xString = finalXCord.ToString();
-			yString = finalYCord.ToString();
-
-			string finalImage = "ImageCell" + xString + yString;
-
-			//NotifyPropertyChanged(finalImage);
+			updateDashboard();
 		}
 
-		private void checkGameOver()
+
+		private void updateDashboard()
 		{
-			char winner = GetWinner();
 
-			if(winner != ' ')
-			{
-				AddText("{0} won! Congratulations!", winner);
-				signsOnBoard = 9;
-			}
-			else if(signsOnBoard == 9)
-			{
-				AddText("A draw. Try again.");
-			}
-		}
-
-		private char GetWinner()
-		{
-			char sign = board[1][1];
-			if (sign != ' ')
-			{
-				if (sign == board[0][0] && sign == board[2][2]
-					|| sign == board[0][1] && sign == board[2][1]
-					|| sign == board[0][2] && sign == board[2][0]
-					|| sign == board[1][0] && sign == board[1][2])
-				{
-					return sign;
-				}
-			}
-
-			sign = board[0][0];
-			if (sign != ' ')
-			{
-				if (sign == board[0][1] && sign == board[0][2]
-					|| sign == board[1][0] && sign == board[2][0])
-				{
-					return sign;
-				}
-			}
-
-			sign = board[0][2];
-			if (sign != ' ')
-			{
-				if (sign == board[1][2] && sign == board[2][2])
-				{
-					return sign;
-				}
-			}
-
-			sign = board[2][0];
-			if (sign != ' ')
-			{
-				if (sign == board[2][1] && sign == board[2][2])
-				{
-					return sign;
-				}
-			}
-
-			return ' ';
 		}
 
 		private void InitBoard()

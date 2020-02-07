@@ -30,12 +30,12 @@ namespace GestureSample.ViewModels
 
 		protected virtual void OnDown(DownUpEventArgs e)
 		{
-			AddText(DownUpInfo("Down", e));
+			//AddText(DownUpInfo("Down", e));
 		}
 
 		protected virtual void OnUp(DownUpEventArgs e)
 		{
-			AddText(DownUpInfo("Up", e));
+			//AddText(DownUpInfo("Up", e));
 		}
 
 		protected virtual void OnTapping(TapEventArgs e)
@@ -50,7 +50,7 @@ namespace GestureSample.ViewModels
 
 		protected virtual void OnDoubleTapped(TapEventArgs e)
 		{
-			AddText(TapInfo("DoubleTapped", e));
+			//AddText(TapInfo("DoubleTapped", e));
 		}
 
 		protected virtual void OnLongPressing(LongPressEventArgs e)
@@ -65,12 +65,12 @@ namespace GestureSample.ViewModels
 
 		protected virtual void OnPinching(PinchEventArgs e)
 		{
-			AddText(PinchInfo("Pinching", e));
+			//AddText(PinchInfo("Pinching", e));
 		}
 
 		protected virtual void OnPinched(PinchEventArgs e)
 		{
-			AddText(PinchInfo("Pinched", e));
+			//AddText(PinchInfo("Pinched", e));
 		}
 
 		protected virtual void OnPanning(PanEventArgs e)
@@ -85,17 +85,17 @@ namespace GestureSample.ViewModels
 
 		protected virtual void OnSwiped(SwipeEventArgs e)
 		{
-			AddText(PanInfo("Swiped " + e.Direction, e));
+			//AddText(PanInfo("Swiped " + e.Direction, e));
 		}
 
 		protected virtual void OnRotating(RotateEventArgs e)
 		{
-			AddText(RotateInfo("Rotating", e));
+			//AddText(RotateInfo("Rotating", e));
 		}
 
 		protected virtual void OnRotated(RotateEventArgs e)
 		{
-			AddText(RotateInfo("Rotated", e));
+			//AddText(RotateInfo("Rotated", e));
 		}
 
 		private string TapInfo(string eventName, TapEventArgs e)

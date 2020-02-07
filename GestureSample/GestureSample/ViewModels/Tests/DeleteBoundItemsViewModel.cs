@@ -39,13 +39,13 @@ namespace GestureSample.ViewModels.Tests
 			if (nextNumber >= ListOfStringsViewModel.Numbers.Length)
 				nextNumber = 0;
 
-			AddText($"Adding {newitem} at position {i}");
+			//AddText($"Adding {newitem} at position {i}");
 			Items.Insert(i, newitem);
 		}
 
 		public void Delete(string item)
 		{
-			AddText($"Deleting {item}");
+			//AddText($"Deleting {item}");
 			Items.Remove((string)item);
 		}
 
@@ -59,7 +59,7 @@ namespace GestureSample.ViewModels.Tests
 					nextNumber = 0;
 			}
 
-			AddText("----------- Reset -----------");
+			//AddText("----------- Reset -----------");
 		}
 	}
 }
