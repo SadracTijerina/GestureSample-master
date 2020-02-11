@@ -13,34 +13,17 @@ namespace GestureSample.Views
 		public int initXCord;
 		public int initYCord;
 
-		//SortedDictionary<int, string> grid;
+		Dictionary<string, string> grid = new Dictionary<string, string>();
 
 		public GridXaml()
 		{
 			InitializeComponent();
 
-			//grid = new SortedDictionary<int, string>();
-
-			//grid.Add(00, "#000000");
-			//grid.Add(01, "#32a852");
-			//grid.Add(02, "#a83232");
-			//grid.Add(10, "#3254a8");
-			//grid.Add(11, "#ffffff");
-			//grid.Add(12, "#a8a832");
-			//grid.Add(20, "#a87132");
-			//grid.Add(21, "#a83298");
-			//grid.Add(22, "#995f5f");
 		}
 
 		//So I need to do panning on the back file of xaml if I want to add the animation. Ill explain further in the code in this function
 		void Image_Panning(object sender, MR.Gestures.PanEventArgs e)
 		{
-
-			//finalXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
-			//finalYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height) - 1;
-
-		
-
 			//Here we are initializing the variable s to the image that we are controlling/panning
 			var s = e.Sender as MR.Gestures.Image;
 
@@ -58,24 +41,11 @@ namespace GestureSample.Views
 
 		}
 
-		//void longPressed(object sender, MR.Gestures.LongPressEventArgs e)
-		//{
-		//	initXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
-		//	////on APA app it would probably be * 5 cause there is about 5 rows I believe
-		//	initYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
-
-		//}
 
 		void tradeImages(object sender, MR.Gestures.PanEventArgs e)
 		{
+			initializeGridAndPoints();
 
-			initXCord = TicTacToeViewModel.initXCord;
-			initYCord = TicTacToeViewModel.inityCord;
-
-			finalXCord = TicTacToeViewModel.finalXCord;
-			finalYCord = TicTacToeViewModel.finalYCord;
-
-			SortedDictionary<int, string> newGrid = new SortedDictionary<int, string>();
 
 			var s = e.Sender as MR.Gestures.Image;
 
@@ -84,45 +54,170 @@ namespace GestureSample.Views
 				return;
 			}
 
+			Dictionary<string, string> newGrid = new Dictionary<string, string>();
 
-			Console.WriteLine("Initial X Cordinate: " + initXCord + " Initial Y Cordinate: " + initYCord);
-			//Console.WriteLine("Final X Cordinate: " + finalXCord + " Final Y Cordinate: " + finalYCord);
+			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
+			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
 
-			//string initCordString = initXCord.ToString() + initYCord.ToString();
-			//int initCord = Int32.Parse(initCordString);
+			//If the initial points is greater than the final points we shifting to the right
+			if (initialPoint > finalPoint)
+			{
+				newGrid = shiftRight(initialPoint, finalPoint);
 
-			//string finalCordString = finalXCord.ToString() + finalYCord.ToString();
-			//int finalCord = Int32.Parse(finalCordString);
+			}
+			else if (finalPoint > initialPoint)
+			{
+				newGrid = shiftLeft(initialPoint, finalPoint);
+			}
+			else
+			{
+				//They are equal dont do anything
+			}
+		}
 
-			//grid[initCord] = grid[finalCord];
+		void initializeGridAndPoints()
+		{
+			initXCord = TicTacToeViewModel.initXCord;
+			initYCord = TicTacToeViewModel.inityCord;
 
-			//foreach (KeyValuePair<int, string> gridItem in grid)
-			//{
-			//	//Here I am trying to basically compare if the finalCord is smaller than the other value coordinates if so, 
-			//	//we need to push them one more column to the right.
-			//	//Change the colors when getting pushed pertaining to the coordinates.
+			finalXCord = TicTacToeViewModel.finalXCord;
+			finalYCord = TicTacToeViewModel.finalYCord;
 
-			//	if (finalCord == gridItem.Key)
-			//	{
-			//		newGrid.Add(gridItem.Key, grid[initCord]);
-			//		grid.Remove(gridItem.Key);
-			//	}
-			//	else if (finalCord < gridItem.Key)
-			//	{
-			//		newGrid.Add(gridItem.Key, grid[gridItem.Key - 1]);
-			//		grid.Remove(gridItem.Key);
-			//	}
-			//	else
-			//	{
-			//		newGrid.Add(gridItem.Key, gridItem.Value);
-			//		grid.Remove(gridItem.Key);
-			//	}
-			//}
+			/*TODO: Find a way to do this without hard coding eventually*/
+			grid.Add("00", "#000000");
+			grid.Add("01", "#32a852");
+			grid.Add("02", "#a83232");
+			grid.Add("10", "#3254a8");
+			grid.Add("11", "#ffffff");
+			grid.Add("12", "#a8a832");
+			grid.Add("20", "#a87132");
+			grid.Add("21", "#a83298");
+			grid.Add("22", "#995f5f");
+		}
 
-			//foreach (KeyValuePair<int, string> printGrid in newGrid)
-			//{
-			//	Console.WriteLine("Key = {0}, Value = {1}", printGrid.Key, printGrid.Value);
-			//}
+		Dictionary<string, string> shiftRight(int initialPoint, int finalPoint)
+		{
+			Dictionary<string, string> newGrid = new Dictionary<string, string>();
+
+			string strFinPoint = finalPoint.ToString();
+			string strInitPoint = initialPoint.ToString();
+
+			if(strFinPoint.Length == 1)
+			{
+				strFinPoint = "0" + strFinPoint;
+			}
+			else if(strInitPoint.Length == 1)
+			{
+				strInitPoint = "0" + strInitPoint;
+			}
+
+			newGrid.Add(strFinPoint, grid[strInitPoint]);
+
+			foreach (KeyValuePair<string, string> gridItem in grid)
+			{
+				string nextGridKeyString = gridItem.Key;
+
+				if(Int32.Parse(gridItem.Key) >= finalPoint && Int32.Parse(gridItem.Key) < initialPoint)
+				{
+					if(nextGridKeyString[1] == '2')
+					{
+						int nextRow =Int32.Parse(nextGridKeyString[0].ToString());
+						nextRow++;
+						nextGridKeyString = string.Empty;
+						nextGridKeyString = nextRow.ToString() + "0";
+					}
+					else
+					{
+						int nextColumn = Int32.Parse(nextGridKeyString[1].ToString());
+						nextColumn++;
+						nextGridKeyString = nextGridKeyString.Remove(1);
+						nextGridKeyString = nextGridKeyString + nextColumn.ToString();
+					}
+
+					newGrid.Add(nextGridKeyString, gridItem.Value);
+				}
+			}
+
+
+			removeRepeatingKeys(newGrid);
+
+			foreach(KeyValuePair<string, string> item in grid)
+			{
+				newGrid.Add(item.Key, item.Value);
+			}
+
+			grid.Clear();
+
+			return newGrid;
+		}
+
+		Dictionary<string, string> shiftLeft(int initialPoint, int finalPoint)
+		{
+			Dictionary<string, string> newGrid = new Dictionary<string, string>();
+
+			string strFinPoint = finalPoint.ToString();
+			string strInitPoint = initialPoint.ToString();
+
+			if (strFinPoint.Length == 1)
+			{
+				strFinPoint = "0" + strFinPoint;
+			}
+			else if (strInitPoint.Length == 1)
+			{
+				strInitPoint = "0" + strInitPoint;
+			}
+
+			newGrid.Add(strFinPoint, grid[strInitPoint]);
+
+			foreach (KeyValuePair<string, string> gridItem in grid)
+			{
+				string nextGridKeyString = gridItem.Key;
+
+				if (Int32.Parse(gridItem.Key) <= finalPoint && Int32.Parse(gridItem.Key) > initialPoint)
+				{
+					if (nextGridKeyString[1] == '0')
+					{
+						int nextRow = Int32.Parse(nextGridKeyString[0].ToString());
+						nextRow--;
+						nextGridKeyString = string.Empty;
+						nextGridKeyString = nextRow.ToString() + "2";
+					}
+					else
+					{
+						int nextColumn = Int32.Parse(nextGridKeyString[1].ToString());
+						nextColumn--;
+						nextGridKeyString = nextGridKeyString.Remove(1);
+						nextGridKeyString = nextGridKeyString + nextColumn.ToString();
+					}
+
+					newGrid.Add(nextGridKeyString, gridItem.Value);
+
+				}
+
+			}
+
+			removeRepeatingKeys(newGrid);
+
+			foreach (KeyValuePair<string, string> item in grid)
+			{
+				newGrid.Add(item.Key, item.Value);
+			}
+
+			grid.Clear();
+
+			return newGrid;
+		}
+
+		void removeRepeatingKeys(Dictionary<string, string> goodGrid)
+		{
+			//create this as a method
+			foreach (KeyValuePair<string, string> newItem in goodGrid)
+			{
+				if (grid.ContainsKey(newItem.Key))
+				{
+					grid.Remove(newItem.Key);
+				}
+			}
 		}
 
 	}
