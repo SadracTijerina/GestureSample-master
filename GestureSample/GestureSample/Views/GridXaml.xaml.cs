@@ -24,6 +24,14 @@ namespace GestureSample.Views
 		//This function is basically used to do the animation as we are panning
 		void Image_Panning(object sender, MR.Gestures.PanEventArgs e)
 		{
+			initXCord = TicTacToeViewModel.initXCord;
+			initYCord = TicTacToeViewModel.inityCord;
+
+			if (initXCord == -1 || initYCord == -1)
+			{
+				return;
+			}
+
 			//Here we are initializing the variable s to the image that we are controlling/panning
 			var s = e.Sender as MR.Gestures.Image;
 
@@ -35,13 +43,16 @@ namespace GestureSample.Views
 			MainGrid.RaiseChild(s);
 
 			//These two lines is what does the animations not sure how the operator works though. The + when removed makes the squares just dissapear once in another grid block
-			//0.5 was smooth but slow
-			s.TranslationX += e.DeltaDistance.X * 0.5;
-			s.TranslationY += e.DeltaDistance.Y * 0.5;
+			s.TranslationX += e.DeltaDistance.X;
+			s.TranslationY += e.DeltaDistance.Y;
 
-			if(e.DeltaDistance.Y > MainGrid.Height / 3 || e.DeltaDistance.X > MainGrid.Width / 3)
+			Console.WriteLine("s.TranslationX: " + s.TranslationX);
+			Console.WriteLine("s.TranslationY: " + s.TranslationY);
+
+
+			if (e.DeltaDistance.Y > MainGrid.Height / 3 || e.DeltaDistance.X > MainGrid.Width / 3)
 			{
-				//This would be used to update in real time if possible...
+				//This would be used to update in real time if possible the other grid items that currently aren't long pressed
 			}
 
 		}
@@ -54,6 +65,11 @@ namespace GestureSample.Views
 
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
+
+			if(initXCord < 0 || initXCord > 2 || initYCord < 0 || initYCord > 2 || finalXCord < 0 || finalXCord > 2 || finalYCord < 0 || finalYCord > 2)
+			{
+				return;
+			}
 
 			var s = e.Sender as MR.Gestures.Image;
 
@@ -92,6 +108,11 @@ namespace GestureSample.Views
 
 			s.TranslationX = finalXCord;
 			s.TranslationY = finalYCord;
+
+			TicTacToeViewModel.inityCord = -1;
+			TicTacToeViewModel.finalYCord = -1;
+			TicTacToeViewModel.initXCord = -1;
+			TicTacToeViewModel.finalXCord = -1;
 		}
 
 

@@ -80,6 +80,9 @@ namespace GestureSample.ViewModels
 
 			TranslationX += e.DeltaDistance.X;
 			TranslationY += e.DeltaDistance.Y;
+
+			Console.WriteLine("TranslationX: " + TranslationX);
+			Console.WriteLine("TranslationY: " + TranslationY);
 		}
 		protected override void OnPinching(MR.Gestures.PinchEventArgs e)
 		{

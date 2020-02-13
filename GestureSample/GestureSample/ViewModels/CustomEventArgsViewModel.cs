@@ -75,12 +75,12 @@ namespace GestureSample.ViewModels
 
 		protected virtual void OnPanning(PanEventArgs e)
 		{
-			AddText(PanInfo("Panning", e));
+			//AddText(PanInfo("Panning", e));
 		}
 
 		protected virtual void OnPanned(PanEventArgs e)
 		{
-			AddText(PanInfo("Panned", e));
+			//AddText(PanInfo("Panned", e));
 		}
 
 		protected virtual void OnSwiped(SwipeEventArgs e)

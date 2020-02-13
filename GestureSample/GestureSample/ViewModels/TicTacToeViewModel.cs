@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestureSample.Views;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,11 +26,11 @@ namespace GestureSample.ViewModels
 		public string ImageCell21 { get { return ValueToImage(board[2][1]); }  }
 		public string ImageCell22 { get { return ValueToImage(board[2][2]); } }
 
-		public static int finalXCord { get; set; }
-		public static int finalYCord { get; set; }
+		public static int finalXCord = -1;
+		public static int finalYCord = -1;
 
-		public static int initXCord { get; set; }
-		public static int inityCord { get; set; }
+		public static int initXCord = -1;
+		public static int inityCord = -1;
 
 
 		public TicTacToeViewModel()
@@ -67,36 +68,28 @@ namespace GestureSample.ViewModels
 		{
 			base.OnPanning(e);
 
+			var s = e.Sender as MR.Gestures.Image;
+			
+
+			if (initXCord == -1 || inityCord == -1)
+			{
+				return;
+	
+			}
+
 			finalXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
 			finalYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
 
+			if (s == null)
+			{
+				return;
+			}
 
-			//var s = e.Sender as MR.Gestures.Image;
-
-			//if (s == null)
-			//{
-			//	return;
-			//}
-
-			////GridXaml.RaiseChild(s);
-
-			//s.TranslationX += e.DeltaDistance.X;
-			//s.TranslationY += e.DeltaDistance.Y;
-
-			//var xCord = e.DeltaDistance.X;
-			//var yCord = e.DeltaDistance.Y;
 		}
-
 
 		protected override void OnLongPressing(MR.Gestures.LongPressEventArgs e)
 		{
 			base.OnLongPressing(e);
-			//y:188.57
-			//x:338.66
-			//AddText("Position width: " + e.ViewPosition.Width);
-			AddText("X: " + e.Touches[0].X);
-			//AddText("Position height: " + )
-			AddText("Y: " + e.Touches[0].Y);
 
 			initXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
 			//On APA app it would probably be * 5 cause there is about 5 rows I believe
@@ -106,13 +99,6 @@ namespace GestureSample.ViewModels
 		protected override void OnPanned(MR.Gestures.PanEventArgs e)
 		{
 			base.OnPanned(e);
-
-			updateDashboard();
-		}
-
-
-		private void updateDashboard()
-		{
 
 		}
 

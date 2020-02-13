@@ -1,26 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<mr:ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
 				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 				xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
 				x:Class="GestureSample.Views.GridXaml"
 
 				Title="Grid Sample"
+                
+                PannedCommand="{Binding PannedCommand}"
+                PanningCommand="{Binding PanningCommand}"
 	>
 
 	<RelativeLayout>
 		<mr:Grid x:Name="MainGrid"
-			RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
-			RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
-			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
-			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.65}"
-
-			BackgroundColor="#808080"
-			ColumnSpacing="5"
-
-			LongPressingCommand="{Binding LongPressingCommand}"
-			LongPressedCommand="{Binding LongPressedCommand}"
-			PanningCommand="{Binding PanningCommand}"
-			PannedCommand="{Binding PannedCommand}"
+                 x:FieldModifier="public"
+                 RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+                 RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+                 RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                 RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.65}"
+                 
+                 
+                 BackgroundColor="#808080"
+                 ColumnSpacing="5"
+                 
+                 LongPressingCommand="{Binding LongPressingCommand}"
+                 LongPressedCommand="{Binding LongPressedCommand}"
+                 PanningCommand="{Binding PanningCommand}"
+                 PannedCommand="{Binding PannedCommand}"
 			>
 
 			<mr:Grid.RowDefinitions>
@@ -35,15 +40,133 @@
 				<ColumnDefinition Width="*" />
 			</mr:Grid.ColumnDefinitions>
 
-            <mr:Image x:Name="Cell00" Source="{Binding ImageCell00}" mr:Grid.Row="0" mr:Grid.Column="0" BackgroundColor="#000000" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell01" Source="{Binding ImageCell01}" mr:Grid.Row="0" mr:Grid.Column="1" BackgroundColor="#32a852" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell02" Source="{Binding ImageCell02}" mr:Grid.Row="0" mr:Grid.Column="2" BackgroundColor="#a83232" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell10" Source="{Binding ImageCell10}" mr:Grid.Row="1" mr:Grid.Column="0" BackgroundColor="#3254a8" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell11" Source="{Binding ImageCell11}" mr:Grid.Row="1" mr:Grid.Column="1" BackgroundColor="#ffffff" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell12" Source="{Binding ImageCell12}" mr:Grid.Row="1" mr:Grid.Column="2" BackgroundColor="#a8a832" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell20" Source="{Binding ImageCell20}" mr:Grid.Row="2" mr:Grid.Column="0" BackgroundColor="#a87132" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell21" Source="{Binding ImageCell21}" mr:Grid.Row="2" mr:Grid.Column="1" BackgroundColor="#a83298" Panning="Image_Panning" Panned="tradeImages" />
-            <mr:Image x:Name="Cell22" Source="{Binding ImageCell22}" mr:Grid.Row="2" mr:Grid.Column="2" BackgroundColor="#995f5f" Panning="Image_Panning" Panned="tradeImages" />
+            <mr:Image x:Name="Cell00"
+                      Source="{Binding ImageCell00}"
+                      mr:Grid.Row="0"
+                      mr:Grid.Column="0" 
+                      BackgroundColor="#000000" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            
+            <mr:Image x:Name="Cell01" 
+                      Source="{Binding ImageCell01}" 
+                      mr:Grid.Row="0" 
+                      mr:Grid.Column="1" 
+                      BackgroundColor="#32a852" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"                      
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell02" 
+                      Source="{Binding ImageCell02}" 
+                      mr:Grid.Row="0" 
+                      mr:Grid.Column="2" 
+                      BackgroundColor="#a83232" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell10" 
+                      Source="{Binding ImageCell10}" 
+                      mr:Grid.Row="1" 
+                      mr:Grid.Column="0" 
+                      BackgroundColor="#3254a8" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell11" 
+                      Source="{Binding ImageCell11}"
+                      mr:Grid.Row="1" 
+                      mr:Grid.Column="1" 
+                      BackgroundColor="#ffffff" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell12" 
+                      Source="{Binding ImageCell12}" 
+                      mr:Grid.Row="1"
+                      mr:Grid.Column="2" 
+                      BackgroundColor="#a8a832" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell20" 
+                      Source="{Binding ImageCell20}" 
+                      mr:Grid.Row="2" 
+                      mr:Grid.Column="0" 
+                      BackgroundColor="#a87132" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell21" 
+                      Source="{Binding ImageCell21}" 
+                      mr:Grid.Row="2"
+                      mr:Grid.Column="1" 
+                      BackgroundColor="#a83298" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
+            <mr:Image x:Name="Cell22" 
+                      Source="{Binding ImageCell22}" 
+                      mr:Grid.Row="2" 
+                      mr:Grid.Column="2" 
+                      BackgroundColor="#995f5f" 
+                      Panning="Image_Panning" 
+                      Panned="tradeImages"
+                      Scale="{Binding Scale}"
+                      Rotation="{Binding Rotation}"
+                      TranslationX="{Binding TranslationX}"
+                      TranslationY="{Binding TranslationY}" 
+                      AnchorX="{Binding AnchorX}"
+                      AnchorY="{Binding AnchorY}"
+                      />
 		</mr:Grid>
 
 		<ScrollView
@@ -54,4 +177,4 @@
 			<Label Text="{Binding Text}" />
 		</ScrollView>
 	</RelativeLayout>
-</ContentPage>
+</mr:ContentPage>
