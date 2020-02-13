@@ -10,6 +10,7 @@ namespace GestureSample.ViewModels
 {
 	public class TicTacToeViewModel : CustomEventArgsViewModel
 	{
+
 		protected char[][] board;
 		protected char next;
 		protected int signsOnBoard;

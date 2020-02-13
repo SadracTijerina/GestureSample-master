@@ -18,10 +18,10 @@ namespace GestureSample.Views
 		public GridXaml()
 		{
 			InitializeComponent();
-
+			initializeGrid();
 		}
 
-		//So I need to do panning on the back file of xaml if I want to add the animation. Ill explain further in the code in this function
+		//This function is basically used to do the animation as we are panning
 		void Image_Panning(object sender, MR.Gestures.PanEventArgs e)
 		{
 			//Here we are initializing the variable s to the image that we are controlling/panning
@@ -32,20 +32,28 @@ namespace GestureSample.Views
 				return;
 			}
 
-			///This would raise the image to the top of the stack when moving around the icons. Only thing is its not able to recognize MainGrid.
-			//MainGrid.RaiseChild(s);
+			MainGrid.RaiseChild(s);
 
 			//These two lines is what does the animations not sure how the operator works though. The + when removed makes the squares just dissapear once in another grid block
-			s.TranslationX += e.DeltaDistance.X;
-			s.TranslationY += e.DeltaDistance.Y;
+			//0.5 was smooth but slow
+			s.TranslationX += e.DeltaDistance.X * 0.5;
+			s.TranslationY += e.DeltaDistance.Y * 0.5;
+
+			if(e.DeltaDistance.Y > MainGrid.Height / 3 || e.DeltaDistance.X > MainGrid.Width / 3)
+			{
+				//This would be used to update in real time if possible...
+			}
 
 		}
 
-
+		//This is called after panning is done, to update the grid
 		void tradeImages(object sender, MR.Gestures.PanEventArgs e)
 		{
-			initializeGridAndPoints();
+			initXCord = TicTacToeViewModel.initXCord;
+			initYCord = TicTacToeViewModel.inityCord;
 
+			finalXCord = TicTacToeViewModel.finalXCord;
+			finalYCord = TicTacToeViewModel.finalYCord;
 
 			var s = e.Sender as MR.Gestures.Image;
 
@@ -69,20 +77,26 @@ namespace GestureSample.Views
 			{
 				newGrid = shiftLeft(initialPoint, finalPoint);
 			}
-			else
+
+			if(finalPoint > initialPoint || initialPoint > finalPoint)
 			{
-				//They are equal dont do anything
+				updateXaml(newGrid);
+
+				foreach (KeyValuePair<string, string> gridItem in newGrid)
+				{
+					grid.Add(gridItem.Key, gridItem.Value);
+				}
+
+				newGrid.Clear();
 			}
+
+			s.TranslationX = finalXCord;
+			s.TranslationY = finalYCord;
 		}
 
-		void initializeGridAndPoints()
+
+		void initializeGrid()
 		{
-			initXCord = TicTacToeViewModel.initXCord;
-			initYCord = TicTacToeViewModel.inityCord;
-
-			finalXCord = TicTacToeViewModel.finalXCord;
-			finalYCord = TicTacToeViewModel.finalYCord;
-
 			/*TODO: Find a way to do this without hard coding eventually*/
 			grid.Add("00", "#000000");
 			grid.Add("01", "#32a852");
@@ -162,7 +176,7 @@ namespace GestureSample.Views
 			{
 				strFinPoint = "0" + strFinPoint;
 			}
-			else if (strInitPoint.Length == 1)
+			if (strInitPoint.Length == 1)
 			{
 				strInitPoint = "0" + strInitPoint;
 			}
@@ -210,7 +224,6 @@ namespace GestureSample.Views
 
 		void removeRepeatingKeys(Dictionary<string, string> goodGrid)
 		{
-			//create this as a method
 			foreach (KeyValuePair<string, string> newItem in goodGrid)
 			{
 				if (grid.ContainsKey(newItem.Key))
@@ -218,6 +231,33 @@ namespace GestureSample.Views
 					grid.Remove(newItem.Key);
 				}
 			}
+		}
+
+		void updateXaml(Dictionary<string, string> updatedDashboard)
+		{
+			
+
+			Cell00.BackgroundColor = Color.FromHex(updatedDashboard["00"]);
+			Cell01.BackgroundColor = Color.FromHex(updatedDashboard["01"]);
+			Cell02.BackgroundColor = Color.FromHex(updatedDashboard["02"]);
+			Cell10.BackgroundColor = Color.FromHex(updatedDashboard["10"]);
+			Cell11.BackgroundColor = Color.FromHex(updatedDashboard["11"]);
+			Cell12.BackgroundColor = Color.FromHex(updatedDashboard["12"]);
+			Cell20.BackgroundColor = Color.FromHex(updatedDashboard["20"]);
+			Cell21.BackgroundColor = Color.FromHex(updatedDashboard["21"]);
+			Cell22.BackgroundColor = Color.FromHex(updatedDashboard["22"]);
+
+
+			MainGrid.Children.Add(Cell00, 0, 0);
+			MainGrid.Children.Add(Cell01, 1, 0);
+			MainGrid.Children.Add(Cell02, 2, 0);
+			MainGrid.Children.Add(Cell10, 0, 1);
+			MainGrid.Children.Add(Cell11, 1, 1);
+			MainGrid.Children.Add(Cell12, 2, 1);
+			MainGrid.Children.Add(Cell20, 0, 2);
+			MainGrid.Children.Add(Cell21, 1, 2);
+			MainGrid.Children.Add(Cell22, 2, 2);
+
 		}
 
 	}
