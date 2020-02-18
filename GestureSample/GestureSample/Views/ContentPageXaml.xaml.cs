@@ -1,5 +1,4 @@
-﻿
-namespace GestureSample.Views
+﻿namespace GestureSample.Views
 {
 	public partial class ContentPageXaml
 	{

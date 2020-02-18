@@ -78,6 +78,7 @@ namespace GestureSample.ViewModels
 		{
 			base.OnPanning(e);
 
+
 			TranslationX += e.DeltaDistance.X;
 			TranslationY += e.DeltaDistance.Y;
 

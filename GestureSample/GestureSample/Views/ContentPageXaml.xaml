@@ -20,6 +20,7 @@
 				PinchedCommand="{Binding PinchedCommand}"
 				RotatingCommand="{Binding RotatingCommand}"
 				RotatedCommand="{Binding RotatedCommand}"
+
 		>
 
 	<RelativeLayout>

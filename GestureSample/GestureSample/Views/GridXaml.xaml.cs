@@ -46,9 +46,6 @@ namespace GestureSample.Views
 			s.TranslationX += e.DeltaDistance.X;
 			s.TranslationY += e.DeltaDistance.Y;
 
-			Console.WriteLine("s.TranslationX: " + s.TranslationX);
-			Console.WriteLine("s.TranslationY: " + s.TranslationY);
-
 
 			if (e.DeltaDistance.Y > MainGrid.Height / 3 || e.DeltaDistance.X > MainGrid.Width / 3)
 			{

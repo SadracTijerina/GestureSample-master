@@ -26,6 +26,20 @@ namespace GestureSample.ViewModels
 		public string ImageCell21 { get { return ValueToImage(board[2][1]); }  }
 		public string ImageCell22 { get { return ValueToImage(board[2][2]); } }
 
+		protected double translationX = 0;
+		public double TranslationX
+		{
+			get { return translationX; }
+			set { SetProperty(ref translationX, value); }
+		}
+
+		protected double translationY = 0;
+		public double TranslationY
+		{
+			get { return translationY; }
+			set { SetProperty(ref translationY, value); }
+		}
+
 		public static int finalXCord = -1;
 		public static int finalYCord = -1;
 
@@ -35,7 +49,6 @@ namespace GestureSample.ViewModels
 
 		public TicTacToeViewModel()
 		{
-			InitBoard();
 		}
 
 		protected override void OnTapping(MR.Gestures.TapEventArgs e)
@@ -46,7 +59,6 @@ namespace GestureSample.ViewModels
 
 			if (signsOnBoard == 9)
 			{
-				InitBoard();
 				return;
 			}
 
@@ -69,12 +81,10 @@ namespace GestureSample.ViewModels
 			base.OnPanning(e);
 
 			var s = e.Sender as MR.Gestures.Image;
-			
 
 			if (initXCord == -1 || inityCord == -1)
 			{
 				return;
-	
 			}
 
 			finalXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
@@ -84,6 +94,10 @@ namespace GestureSample.ViewModels
 			{
 				return;
 			}
+
+
+			//s.TranslationX += e.DeltaDistance.X;
+			//s.TranslationY += e.DeltaDistance.Y;
 
 		}
 
@@ -99,31 +113,8 @@ namespace GestureSample.ViewModels
 		protected override void OnPanned(MR.Gestures.PanEventArgs e)
 		{
 			base.OnPanned(e);
-
 		}
 
-		private void InitBoard()
-		{
-			AddText("New game");
-
-			board = new[] {
-				new [] {' ', ' ', ' '},
-				new [] {' ', ' ', ' '},
-				new [] {' ', ' ', ' '},
-			};
-			next = 'X';
-			signsOnBoard = 0;
-
-			NotifyPropertyChanged(() => ImageCell00);
-			NotifyPropertyChanged(() => ImageCell01);
-			NotifyPropertyChanged(() => ImageCell02);
-			NotifyPropertyChanged(() => ImageCell10);
-			NotifyPropertyChanged(() => ImageCell11);
-			NotifyPropertyChanged(() => ImageCell12);
-			NotifyPropertyChanged(() => ImageCell20);
-			NotifyPropertyChanged(() => ImageCell21);
-			NotifyPropertyChanged(() => ImageCell22);
-		}
 
 		private string ValueToImage(char value)
 		{

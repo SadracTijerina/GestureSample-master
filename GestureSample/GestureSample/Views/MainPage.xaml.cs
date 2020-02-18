@@ -18,6 +18,7 @@ namespace GestureSample.Views
 		{
 			// main page
 			new PageConfig(null, "ContentPage", () => new ContentPageXaml { BindingContext = new ViewModels.TransformImageViewModel() }),
+			new PageConfig(null, "ContentPageSample", () => new ContentPageSampleXaml {BindingContext = new ViewModels.ContentPageSampleViewModel() }),
 			new PageConfig(null, "Layouts", null),
 			new PageConfig(null, "Views", null),
 			new PageConfig(null, "Cells", null),

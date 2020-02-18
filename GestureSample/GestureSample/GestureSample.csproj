@@ -9,4 +9,10 @@
     <PackageReference Include="Xamarin.Forms" Version="3.3.0.967583" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\ContentPageSampleXaml.xaml.cs">
+      <DependentUpon>ContentPageSampleXaml.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
