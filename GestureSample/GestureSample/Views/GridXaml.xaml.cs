@@ -42,27 +42,30 @@ namespace GestureSample.Views
 
 			MainGrid.RaiseChild(s);
 
-			//These two lines is what does the animations not sure how the operator works though. The + when removed makes the squares just dissapear once in another grid block
+			//These two lines is what does the animations. TotalDistance is what made the animation smooth
 			s.TranslationX += e.TotalDistance.X;
 			s.TranslationY += e.TotalDistance.Y;
 
 
-			//if (e.TotalDistance.Y > MainGrid.Height / 3 || e.TotalDistance.X > MainGrid.Width / 3)
-			//{
-			//	//This would be used to update in real time if possible the other grid items that currently aren't long pressed
-			//}
+			if (e.TotalDistance.Y > MainGrid.Height / 3 || e.TotalDistance.X > MainGrid.Width / 3)
+			{
+				//This would be used to update in real time if possible the other grid items that currently aren't long pressed
+			}
 
 		}
 
 		//This is called after panning is done, to update the grid
 		void tradeImages(object sender, MR.Gestures.PanEventArgs e)
 		{
+
+			//Here we are getting the coordinates from the view model because for whatever reason we can't accurately get the coordinates through the file behind xaml
 			initXCord = TicTacToeViewModel.initXCord;
 			initYCord = TicTacToeViewModel.inityCord;
 
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
 
+			//Here we don't want to try and shuffle around the blocks if the coordinates we have aren't in the range of the current size of grid
 			if(initXCord < 0 || initXCord > 2 || initYCord < 0 || initYCord > 2 || finalXCord < 0 || finalXCord > 2 || finalYCord < 0 || finalYCord > 2)
 			{
 				return;
@@ -70,11 +73,13 @@ namespace GestureSample.Views
 
 			var s = e.Sender as MR.Gestures.Image;
 
+			//If the user doesn't have an image selected we don't want to try and shuffle the blocks
 			if (s == null)
 			{
 				return;
 			}
 
+			//Now that we have checked for "every" potential error we can start focusing in creating our new grid
 			Dictionary<string, string> newGrid = new Dictionary<string, string>();
 
 			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
@@ -91,6 +96,7 @@ namespace GestureSample.Views
 				newGrid = shiftLeft(initialPoint, finalPoint);
 			}
 
+			//As long as we moved our block to a new grid location update the screen
 			if(finalPoint > initialPoint || initialPoint > finalPoint)
 			{
 				updateXaml(newGrid);
@@ -103,6 +109,7 @@ namespace GestureSample.Views
 				newGrid.Clear();
 			}
 
+			//This sets the image to the final grid spot it was dropped since visually it wouldn't go to its dropped location
 			s.TranslationX = finalXCord;
 			s.TranslationY = finalYCord;
 
@@ -129,11 +136,13 @@ namespace GestureSample.Views
 
 		Dictionary<string, string> shiftRight(int initialPoint, int finalPoint)
 		{
+			//Similar to how grid dictionary is set up, we are going to set up newGrid
 			Dictionary<string, string> newGrid = new Dictionary<string, string>();
 
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
 
+			//the only way the string is length 1 is if the point is in the first row causing the first number of int to be 0
 			if(strFinPoint.Length == 1)
 			{
 				strFinPoint = "0" + strFinPoint;
@@ -143,14 +152,17 @@ namespace GestureSample.Views
 				strInitPoint = "0" + strInitPoint;
 			}
 
+			//The final point now contains the block that got dropped there
 			newGrid.Add(strFinPoint, grid[strInitPoint]);
 
+			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
 			foreach (KeyValuePair<string, string> gridItem in grid)
 			{
 				string nextGridKeyString = gridItem.Key;
 
 				if(Int32.Parse(gridItem.Key) >= finalPoint && Int32.Parse(gridItem.Key) < initialPoint)
 				{
+					//If its in the last column we have to move to next row and set column to 0, else we just go to the next column
 					if(nextGridKeyString[1] == '2')
 					{
 						int nextRow =Int32.Parse(nextGridKeyString[0].ToString());
@@ -173,11 +185,13 @@ namespace GestureSample.Views
 
 			removeRepeatingKeys(newGrid);
 
+			//Anything that is still in grid that wasn't deleted should be added to newGrid to have the completed grid
 			foreach(KeyValuePair<string, string> item in grid)
 			{
 				newGrid.Add(item.Key, item.Value);
 			}
 
+			//We want to overrite grid so we should clear it of data now that we have all its data in newGrid
 			grid.Clear();
 
 			return newGrid;
@@ -240,6 +254,7 @@ namespace GestureSample.Views
 			return newGrid;
 		}
 
+	
 		void removeRepeatingKeys(Dictionary<string, string> goodGrid)
 		{
 			foreach (KeyValuePair<string, string> newItem in goodGrid)
