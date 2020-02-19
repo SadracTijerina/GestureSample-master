@@ -43,14 +43,14 @@ namespace GestureSample.Views
 			MainGrid.RaiseChild(s);
 
 			//These two lines is what does the animations not sure how the operator works though. The + when removed makes the squares just dissapear once in another grid block
-			s.TranslationX += e.DeltaDistance.X;
-			s.TranslationY += e.DeltaDistance.Y;
+			s.TranslationX += e.TotalDistance.X;
+			s.TranslationY += e.TotalDistance.Y;
 
 
-			if (e.DeltaDistance.Y > MainGrid.Height / 3 || e.DeltaDistance.X > MainGrid.Width / 3)
-			{
-				//This would be used to update in real time if possible the other grid items that currently aren't long pressed
-			}
+			//if (e.TotalDistance.Y > MainGrid.Height / 3 || e.TotalDistance.X > MainGrid.Width / 3)
+			//{
+			//	//This would be used to update in real time if possible the other grid items that currently aren't long pressed
+			//}
 
 		}
 

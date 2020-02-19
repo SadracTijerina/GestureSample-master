@@ -36,8 +36,8 @@
             <mr:Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </mr:Grid.ColumnDefinitions>
-            
-            
+
+
             <mr:Image x:Name="Kitten" 
                         Source="../Flusi1.jpg"
                         Scale="{Binding Scale}"

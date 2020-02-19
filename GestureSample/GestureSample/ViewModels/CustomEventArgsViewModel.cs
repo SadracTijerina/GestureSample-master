@@ -76,11 +76,22 @@ namespace GestureSample.ViewModels
 		protected virtual void OnPanning(PanEventArgs e)
 		{
 			//AddText(PanInfo("Panning", e));
+			var s = e.Sender as MR.Gestures.Image;
+
+			if (s == null)
+			{
+				return;
+			}
+
+			//These two lines is what does the animations not sure how the operator works though. The + when removed makes the squares just dissapear once in another grid block
+			s.TranslationX += e.DeltaDistance.X;
+			s.TranslationY += e.DeltaDistance.Y;
 		}
 
 		protected virtual void OnPanned(PanEventArgs e)
 		{
 			//AddText(PanInfo("Panned", e));
+
 		}
 
 		protected virtual void OnSwiped(SwipeEventArgs e)
