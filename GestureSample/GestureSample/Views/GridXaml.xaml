@@ -11,12 +11,12 @@
 	>
 
 	<RelativeLayout>
-		<mr:Grid x:Name="MainGrid"
+        <mr:Grid x:Name="MainGrid"
                  x:FieldModifier="public"
                  RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
                  RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
                  RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
-                 RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.65}"
+                 RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}"
                  
                  
                  BackgroundColor="#808080"
@@ -28,17 +28,17 @@
                  PannedCommand="{Binding PannedCommand}"
 			>
 
-			<mr:Grid.RowDefinitions>
-				<RowDefinition Height="*" />
-				<RowDefinition Height="*" />
-				<RowDefinition Height="*" />
-			</mr:Grid.RowDefinitions>
+            <mr:Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </mr:Grid.RowDefinitions>
 
-			<mr:Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</mr:Grid.ColumnDefinitions>
+            <mr:Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </mr:Grid.ColumnDefinitions>
 
             <mr:Image x:Name="Cell00"
                       Source="{Binding ImageCell00}"
@@ -54,7 +54,7 @@
                       AnchorX="{Binding AnchorX}"
                       AnchorY="{Binding AnchorY}"
                       />
-            
+
             <mr:Image x:Name="Cell01" 
                       Source="{Binding ImageCell01}" 
                       mr:Grid.Row="0" 
@@ -167,14 +167,6 @@
                       AnchorX="{Binding AnchorX}"
                       AnchorY="{Binding AnchorY}"
                       />
-		</mr:Grid>
-
-		<ScrollView
-				RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
-				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.65}"
-				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
-				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.35}">
-			<Label Text="{Binding Text}" />
-		</ScrollView>
-	</RelativeLayout>
+        </mr:Grid>
+    </RelativeLayout>
 </mr:ContentPage>

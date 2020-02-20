@@ -84,8 +84,8 @@ namespace GestureSample.ViewModels
 			}
 
 			//These two lines is what does the animations not sure how the operator works though. The + when removed makes the squares just dissapear once in another grid block
-			s.TranslationX += e.DeltaDistance.X;
-			s.TranslationY += e.DeltaDistance.Y;
+			s.TranslationX += e.TotalDistance.X;
+			s.TranslationY += e.TotalDistance.Y;
 		}
 
 		protected virtual void OnPanned(PanEventArgs e)

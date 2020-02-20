@@ -38,6 +38,14 @@ namespace GestureSample.ViewModels
 			}
 		}
 
+		protected override void OnPanning(MR.Gestures.PanEventArgs e)
+		{
+			base.OnPanning(e);
+
+			//These two lines is what does the animations. TotalDistance is what made the animation smooth
+			TranslationX += e.DeltaDistance.X;
+			TranslationY += e.DeltaDistance.Y;
+		}
 
 
 		public TransformImageViewModel()

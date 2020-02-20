@@ -7,7 +7,6 @@ namespace GestureSample.Views
 {
 	public partial class GridXaml
 	{
-
 		public int finalXCord;
 		public int finalYCord;
 		public int initXCord;
@@ -46,12 +45,15 @@ namespace GestureSample.Views
 			s.TranslationX += e.TotalDistance.X;
 			s.TranslationY += e.TotalDistance.Y;
 
-
-			if (e.TotalDistance.Y > MainGrid.Height / 3 || e.TotalDistance.X > MainGrid.Width / 3)
+			//TODO: Figure out what to do if the user goes out of grid range with panning!
+			if (e.ViewPosition.Y > MainGrid.Height)
 			{
-				//This would be used to update in real time if possible the other grid items that currently aren't long pressed
+				TicTacToeViewModel.finalXCord = TicTacToeViewModel.initXCord;
+				TicTacToeViewModel.finalYCord = TicTacToeViewModel.inityCord;
+				return;
 			}
 
+			//TODO: Shuffle the rest of the blocks as we are panning one image if possible
 		}
 
 		//This is called after panning is done, to update the grid
@@ -65,17 +67,20 @@ namespace GestureSample.Views
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
 
-			//Here we don't want to try and shuffle around the blocks if the coordinates we have aren't in the range of the current size of grid
-			if(initXCord < 0 || initXCord > 2 || initYCord < 0 || initYCord > 2 || finalXCord < 0 || finalXCord > 2 || finalYCord < 0 || finalYCord > 2)
-			{
-				return;
-			}
-
 			var s = e.Sender as MR.Gestures.Image;
 
 			//If the user doesn't have an image selected we don't want to try and shuffle the blocks
 			if (s == null)
 			{
+				return;
+			}
+
+			//if the points are equal just move the block back to its intial block since in some occasions it would be hovering over another grid item since it wasn't fully dragged over there. 
+			//As well as check if we went past the grid length we should just go back to its position since it would struggle when dealing with the length, not width
+			if ( finalYCord < 0 || finalYCord > 2 || (initXCord == finalXCord && initYCord == finalYCord) )
+			{
+				s.TranslationX = initXCord;
+				s.TranslationY = initYCord;
 				return;
 			}
 
@@ -85,29 +90,25 @@ namespace GestureSample.Views
 			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
 			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
 
+
 			//If the initial points is greater than the final points we shifting to the right
 			if (initialPoint > finalPoint)
 			{
 				newGrid = shiftRight(initialPoint, finalPoint);
-
 			}
 			else if (finalPoint > initialPoint)
 			{
 				newGrid = shiftLeft(initialPoint, finalPoint);
 			}
 
-			//As long as we moved our block to a new grid location update the screen
-			if(finalPoint > initialPoint || initialPoint > finalPoint)
+			updateXaml(newGrid);
+
+			foreach (KeyValuePair<string, string> gridItem in newGrid)
 			{
-				updateXaml(newGrid);
-
-				foreach (KeyValuePair<string, string> gridItem in newGrid)
-				{
-					grid.Add(gridItem.Key, gridItem.Value);
-				}
-
-				newGrid.Clear();
+				grid.Add(gridItem.Key, gridItem.Value);
 			}
+
+			newGrid.Clear();
 
 			//This sets the image to the final grid spot it was dropped since visually it wouldn't go to its dropped location
 			s.TranslationX = finalXCord;
@@ -117,23 +118,10 @@ namespace GestureSample.Views
 			TicTacToeViewModel.finalYCord = -1;
 			TicTacToeViewModel.initXCord = -1;
 			TicTacToeViewModel.finalXCord = -1;
+
 		}
 
-
-		void initializeGrid()
-		{
-			/*TODO: Find a way to do this without hard coding eventually*/
-			grid.Add("00", "#000000");
-			grid.Add("01", "#32a852");
-			grid.Add("02", "#a83232");
-			grid.Add("10", "#3254a8");
-			grid.Add("11", "#ffffff");
-			grid.Add("12", "#a8a832");
-			grid.Add("20", "#a87132");
-			grid.Add("21", "#a83298");
-			grid.Add("22", "#995f5f");
-		}
-
+		//Basically the logic between shifting the icons right
 		Dictionary<string, string> shiftRight(int initialPoint, int finalPoint)
 		{
 			//Similar to how grid dictionary is set up, we are going to set up newGrid
@@ -147,7 +135,7 @@ namespace GestureSample.Views
 			{
 				strFinPoint = "0" + strFinPoint;
 			}
-			else if(strInitPoint.Length == 1)
+			if(strInitPoint.Length == 1)
 			{
 				strInitPoint = "0" + strInitPoint;
 			}
@@ -182,7 +170,6 @@ namespace GestureSample.Views
 				}
 			}
 
-
 			removeRepeatingKeys(newGrid);
 
 			//Anything that is still in grid that wasn't deleted should be added to newGrid to have the completed grid
@@ -197,6 +184,7 @@ namespace GestureSample.Views
 			return newGrid;
 		}
 
+		//Basically the logic between shifting the icons left
 		Dictionary<string, string> shiftLeft(int initialPoint, int finalPoint)
 		{
 			Dictionary<string, string> newGrid = new Dictionary<string, string>();
@@ -268,8 +256,6 @@ namespace GestureSample.Views
 
 		void updateXaml(Dictionary<string, string> updatedDashboard)
 		{
-			
-
 			Cell00.BackgroundColor = Color.FromHex(updatedDashboard["00"]);
 			Cell01.BackgroundColor = Color.FromHex(updatedDashboard["01"]);
 			Cell02.BackgroundColor = Color.FromHex(updatedDashboard["02"]);
@@ -280,7 +266,6 @@ namespace GestureSample.Views
 			Cell21.BackgroundColor = Color.FromHex(updatedDashboard["21"]);
 			Cell22.BackgroundColor = Color.FromHex(updatedDashboard["22"]);
 
-
 			MainGrid.Children.Add(Cell00, 0, 0);
 			MainGrid.Children.Add(Cell01, 1, 0);
 			MainGrid.Children.Add(Cell02, 2, 0);
@@ -290,7 +275,20 @@ namespace GestureSample.Views
 			MainGrid.Children.Add(Cell20, 0, 2);
 			MainGrid.Children.Add(Cell21, 1, 2);
 			MainGrid.Children.Add(Cell22, 2, 2);
+		}
 
+		void initializeGrid()
+		{
+			/*TODO: Find a way to do this without hard coding eventually*/
+			grid.Add("00", "#000000");
+			grid.Add("01", "#32a852");
+			grid.Add("02", "#a83232");
+			grid.Add("10", "#3254a8");
+			grid.Add("11", "#ffffff");
+			grid.Add("12", "#a8a832");
+			grid.Add("20", "#a87132");
+			grid.Add("21", "#a83298");
+			grid.Add("22", "#995f5f");
 		}
 
 	}
