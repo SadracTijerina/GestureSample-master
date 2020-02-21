@@ -2,6 +2,10 @@
 using System;
 using System.Collections.Generic;
 using GestureSample.ViewModels;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GestureSample.Views
 {
@@ -12,12 +16,22 @@ namespace GestureSample.Views
 		public int initXCord;
 		public int initYCord;
 
-		Dictionary<string, string> grid = new Dictionary<string, string>();
+		public string tappedCord;
+
+		Dictionary<string, List<string>> grid = new Dictionary<string, List<string>>();
 
 		public GridXaml()
 		{
 			InitializeComponent();
 			initializeGrid();
+		}
+
+		void tappedGrid(object sender, MR.Gestures.TapEventArgs e)
+		{
+			tappedCord = TicTacToeViewModel.tapYCord.ToString() + TicTacToeViewModel.tapXCord.ToString();
+
+			updateXaml(grid, true);
+
 		}
 
 		//This function is basically used to do the animation as we are panning
@@ -45,7 +59,7 @@ namespace GestureSample.Views
 			s.TranslationX += e.TotalDistance.X;
 			s.TranslationY += e.TotalDistance.Y;
 
-			//TODO: Figure out what to do if the user goes out of grid range with panning!
+			//This sets up once we try to trade images to bring it back to its original spot, due to it going past the grid length which kept causing bugs.
 			if (e.ViewPosition.Y > MainGrid.Height)
 			{
 				TicTacToeViewModel.finalXCord = TicTacToeViewModel.initXCord;
@@ -67,7 +81,7 @@ namespace GestureSample.Views
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
 
-			var s = e.Sender as MR.Gestures.Image;
+			var s = e.Sender as MR.Gestures.Label;
 
 			//If the user doesn't have an image selected we don't want to try and shuffle the blocks
 			if (s == null)
@@ -85,7 +99,7 @@ namespace GestureSample.Views
 			}
 
 			//Now that we have checked for "every" potential error we can start focusing in creating our new grid
-			Dictionary<string, string> newGrid = new Dictionary<string, string>();
+			Dictionary<string, List<string>> newGrid = new Dictionary<string, List<string>>();
 
 			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
 			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
@@ -101,9 +115,9 @@ namespace GestureSample.Views
 				newGrid = shiftLeft(initialPoint, finalPoint);
 			}
 
-			updateXaml(newGrid);
+			updateXaml(newGrid, false);
 
-			foreach (KeyValuePair<string, string> gridItem in newGrid)
+			foreach (KeyValuePair<string, List<string>> gridItem in newGrid)
 			{
 				grid.Add(gridItem.Key, gridItem.Value);
 			}
@@ -122,10 +136,10 @@ namespace GestureSample.Views
 		}
 
 		//Basically the logic between shifting the icons right
-		Dictionary<string, string> shiftRight(int initialPoint, int finalPoint)
+		Dictionary<string, List<string>> shiftRight(int initialPoint, int finalPoint)
 		{
 			//Similar to how grid dictionary is set up, we are going to set up newGrid
-			Dictionary<string, string> newGrid = new Dictionary<string, string>();
+			Dictionary<string, List<string>> newGrid = new Dictionary<string, List<string>>();
 
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
@@ -140,11 +154,12 @@ namespace GestureSample.Views
 				strInitPoint = "0" + strInitPoint;
 			}
 
+			List<string> finalPointColor = grid[strInitPoint];
 			//The final point now contains the block that got dropped there
-			newGrid.Add(strFinPoint, grid[strInitPoint]);
+			newGrid.Add(strFinPoint, finalPointColor);
 
 			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
-			foreach (KeyValuePair<string, string> gridItem in grid)
+			foreach (KeyValuePair<string, List<string>> gridItem in grid)
 			{
 				string nextGridKeyString = gridItem.Key;
 
@@ -173,7 +188,7 @@ namespace GestureSample.Views
 			removeRepeatingKeys(newGrid);
 
 			//Anything that is still in grid that wasn't deleted should be added to newGrid to have the completed grid
-			foreach(KeyValuePair<string, string> item in grid)
+			foreach(KeyValuePair<string, List<string>> item in grid)
 			{
 				newGrid.Add(item.Key, item.Value);
 			}
@@ -185,9 +200,9 @@ namespace GestureSample.Views
 		}
 
 		//Basically the logic between shifting the icons left
-		Dictionary<string, string> shiftLeft(int initialPoint, int finalPoint)
+		Dictionary<string, List<string>> shiftLeft(int initialPoint, int finalPoint)
 		{
-			Dictionary<string, string> newGrid = new Dictionary<string, string>();
+			Dictionary<string, List<string>> newGrid = new Dictionary<string, List<string>>();
 
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
@@ -203,7 +218,7 @@ namespace GestureSample.Views
 
 			newGrid.Add(strFinPoint, grid[strInitPoint]);
 
-			foreach (KeyValuePair<string, string> gridItem in grid)
+			foreach (KeyValuePair<string, List<string>> gridItem in grid)
 			{
 				string nextGridKeyString = gridItem.Key;
 
@@ -232,7 +247,7 @@ namespace GestureSample.Views
 
 			removeRepeatingKeys(newGrid);
 
-			foreach (KeyValuePair<string, string> item in grid)
+			foreach (KeyValuePair<string, List<string>> item in grid)
 			{
 				newGrid.Add(item.Key, item.Value);
 			}
@@ -243,9 +258,9 @@ namespace GestureSample.Views
 		}
 
 	
-		void removeRepeatingKeys(Dictionary<string, string> goodGrid)
+		void removeRepeatingKeys(Dictionary<string, List<string>> goodGrid)
 		{
-			foreach (KeyValuePair<string, string> newItem in goodGrid)
+			foreach (KeyValuePair<string, List<string>> newItem in goodGrid)
 			{
 				if (grid.ContainsKey(newItem.Key))
 				{
@@ -254,17 +269,118 @@ namespace GestureSample.Views
 			}
 		}
 
-		void updateXaml(Dictionary<string, string> updatedDashboard)
+		void updateXaml(Dictionary<string, List<string>> updatedGrid, bool tapped)
 		{
-			Cell00.BackgroundColor = Color.FromHex(updatedDashboard["00"]);
-			Cell01.BackgroundColor = Color.FromHex(updatedDashboard["01"]);
-			Cell02.BackgroundColor = Color.FromHex(updatedDashboard["02"]);
-			Cell10.BackgroundColor = Color.FromHex(updatedDashboard["10"]);
-			Cell11.BackgroundColor = Color.FromHex(updatedDashboard["11"]);
-			Cell12.BackgroundColor = Color.FromHex(updatedDashboard["12"]);
-			Cell20.BackgroundColor = Color.FromHex(updatedDashboard["20"]);
-			Cell21.BackgroundColor = Color.FromHex(updatedDashboard["21"]);
-			Cell22.BackgroundColor = Color.FromHex(updatedDashboard["22"]);
+			List<string> gridItem = new List<string>();
+
+			gridItem = updatedGrid["00"];
+			string color = gridItem[0];
+			Cell00.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["01"];
+			color = gridItem[0];
+			Cell01.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["02"];
+			color = gridItem[0];
+			Cell02.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["10"];
+			color = gridItem[0];
+			Cell10.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["11"];
+			color = gridItem[0];
+			Cell11.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["12"];
+			color = gridItem[0];
+			Cell12.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["20"];
+			color = gridItem[0];
+			Cell20.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["21"];
+			color = gridItem[0];
+			Cell21.BackgroundColor = Color.FromHex(color);
+
+			gridItem = updatedGrid["22"];
+			color = gridItem[0];
+			Cell22.BackgroundColor = Color.FromHex(color);
+
+			if(tapped)
+			{
+				string colorText;
+				List<string> text;
+
+				if(tappedCord == "00")
+				{
+					text = updatedGrid["00"];
+					colorText = text[1];
+
+					Cell00.Text = colorText;
+				}
+				else if (tappedCord == "01")
+				{
+					text = updatedGrid["01"];
+					colorText = text[1];
+
+					Cell01.Text = colorText;
+				}
+				else if (tappedCord == "02")
+				{
+					text = updatedGrid["02"];
+					colorText = text[1];
+
+					Cell02.Text = colorText;
+				}
+				else if (tappedCord == "10")
+				{
+					text = updatedGrid["10"];
+					colorText = text[1];
+
+					Cell10.Text = colorText;
+				}
+				else if (tappedCord == "11")
+				{
+					text = updatedGrid["11"];
+					colorText = text[1];
+
+					Cell11.Text = colorText;
+				}
+				else if (tappedCord == "12")
+				{
+					text = updatedGrid["12"];
+					colorText = text[1];
+
+					Cell12.Text = colorText;
+				}
+				else if (tappedCord == "20")
+				{
+					text = updatedGrid["20"];
+					colorText = text[1];
+
+					Cell20.Text = colorText;
+				}
+				else if (tappedCord == "21")
+				{
+					text = updatedGrid["21"];
+					colorText = text[1];
+
+					Cell21.Text = colorText;
+				}
+				else
+				{
+					text = updatedGrid["22"];
+					colorText = text[1];
+
+					Cell22.Text = colorText;
+				}
+			}
+
+			var row = Cell11.GetValue(Grid.RowProperty);
+			var column = Cell11.GetValue(Grid.ColumnProperty);
 
 			MainGrid.Children.Add(Cell00, 0, 0);
 			MainGrid.Children.Add(Cell01, 1, 0);
@@ -280,15 +396,54 @@ namespace GestureSample.Views
 		void initializeGrid()
 		{
 			/*TODO: Find a way to do this without hard coding eventually*/
-			grid.Add("00", "#000000");
-			grid.Add("01", "#32a852");
-			grid.Add("02", "#a83232");
-			grid.Add("10", "#3254a8");
-			grid.Add("11", "#ffffff");
-			grid.Add("12", "#a8a832");
-			grid.Add("20", "#a87132");
-			grid.Add("21", "#a83298");
-			grid.Add("22", "#995f5f");
+
+			List<string> gridItem00 = new List<string>();
+			List<string> gridItem01 = new List<string>();
+			List<string> gridItem02 = new List<string>();
+			List<string> gridItem10 = new List<string>();
+			List<string> gridItem11 = new List<string>();
+			List<string> gridItem12 = new List<string>();
+			List<string> gridItem20 = new List<string>();
+			List<string> gridItem21 = new List<string>();
+			List<string> gridItem22 = new List<string>();
+
+
+			gridItem00.Add("#000000");
+			gridItem00.Add("Black");
+			grid.Add("00", gridItem00);
+
+			gridItem01.Add("#32a852");
+			gridItem01.Add("Green");
+			grid.Add("01", gridItem01);
+
+			gridItem02.Add("#a83232");
+			gridItem02.Add("Red");
+			grid.Add("02", gridItem02);
+
+			gridItem10.Add("#3254a8");
+			gridItem10.Add("Blue");
+			grid.Add("10", gridItem10);
+
+			gridItem11.Add("#ffffff");
+			gridItem11.Add("White");
+			grid.Add("11", gridItem11);
+
+			gridItem12.Add("#a8a832");
+			gridItem12.Add("Yellow");
+			grid.Add("12", gridItem12);
+
+			gridItem20.Add("#a87132");
+			gridItem20.Add("Brown");
+			grid.Add("20", gridItem20);
+
+			gridItem21.Add("#a83298");
+			gridItem21.Add("Purple");
+			grid.Add("21", gridItem21);
+
+			gridItem22.Add("#995f5f");
+			gridItem22.Add("IDK");
+			grid.Add("22", gridItem22);
+
 		}
 
 	}
