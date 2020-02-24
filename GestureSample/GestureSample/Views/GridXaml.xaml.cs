@@ -2,10 +2,6 @@
 using System;
 using System.Collections.Generic;
 using GestureSample.ViewModels;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestureSample.Views
 {
@@ -18,20 +14,14 @@ namespace GestureSample.Views
 
 		public string tappedCord;
 
-		Dictionary<string, List<string>> grid = new Dictionary<string, List<string>>();
-
 		public GridXaml()
 		{
 			InitializeComponent();
-			initializeGrid();
 		}
 
 		void tappedGrid(object sender, MR.Gestures.TapEventArgs e)
 		{
 			tappedCord = TicTacToeViewModel.tapYCord.ToString() + TicTacToeViewModel.tapXCord.ToString();
-
-			updateXaml(grid, true);
-
 		}
 
 		//This function is basically used to do the animation as we are panning
@@ -46,7 +36,7 @@ namespace GestureSample.Views
 			}
 
 			//Here we are initializing the variable s to the image that we are controlling/panning
-			var s = e.Sender as MR.Gestures.Image;
+			var s = e.Sender as MR.Gestures.Label;
 
 			if (s == null)
 			{
@@ -98,9 +88,6 @@ namespace GestureSample.Views
 				return;
 			}
 
-			//Now that we have checked for "every" potential error we can start focusing in creating our new grid
-			Dictionary<string, List<string>> newGrid = new Dictionary<string, List<string>>();
-
 			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
 			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
 
@@ -108,21 +95,12 @@ namespace GestureSample.Views
 			//If the initial points is greater than the final points we shifting to the right
 			if (initialPoint > finalPoint)
 			{
-				newGrid = shiftRight(initialPoint, finalPoint);
+				shiftRight(initialPoint, finalPoint);
 			}
-			else if (finalPoint > initialPoint)
+			else if (initialPoint < finalPoint)
 			{
-				newGrid = shiftLeft(initialPoint, finalPoint);
+				shiftLeft(initialPoint, finalPoint);
 			}
-
-			updateXaml(newGrid, false);
-
-			foreach (KeyValuePair<string, List<string>> gridItem in newGrid)
-			{
-				grid.Add(gridItem.Key, gridItem.Value);
-			}
-
-			newGrid.Clear();
 
 			//This sets the image to the final grid spot it was dropped since visually it wouldn't go to its dropped location
 			s.TranslationX = finalXCord;
@@ -136,11 +114,8 @@ namespace GestureSample.Views
 		}
 
 		//Basically the logic between shifting the icons right
-		Dictionary<string, List<string>> shiftRight(int initialPoint, int finalPoint)
+		void shiftRight(int initialPoint, int finalPoint)
 		{
-			//Similar to how grid dictionary is set up, we are going to set up newGrid
-			Dictionary<string, List<string>> newGrid = new Dictionary<string, List<string>>();
-
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
 
@@ -154,56 +129,65 @@ namespace GestureSample.Views
 				strInitPoint = "0" + strInitPoint;
 			}
 
-			List<string> finalPointColor = grid[strInitPoint];
-			//The final point now contains the block that got dropped there
-			newGrid.Add(strFinPoint, finalPointColor);
+			List<MR.Gestures.Label> Cells = new List<MR.Gestures.Label>();
 
-			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
-			foreach (KeyValuePair<string, List<string>> gridItem in grid)
+			Cells.Add(Block1);
+			Cells.Add(Block2);
+			Cells.Add(Block3);
+
+			Cells.Add(Block4);
+			Cells.Add(Block5);
+			Cells.Add(Block6);
+
+			Cells.Add(Block7);
+			Cells.Add(Block8);
+			Cells.Add(Block9);
+
+			//The final point should now contain the block that got dropped there. The if statements is trying to find which is the inital point
+			foreach (MR.Gestures.Label selectedItem in Cells)
 			{
-				string nextGridKeyString = gridItem.Key;
+				if(selectedItem.GetValue(Grid.RowProperty).ToString() + selectedItem.GetValue(Grid.ColumnProperty).ToString() == strInitPoint)
+				{ 
+					
+					int row = Int32.Parse(strFinPoint[0].ToString());
+					int column = Int32.Parse(strFinPoint[1].ToString());
+					selectedItem.SetValue(Grid.RowProperty, row);
+					selectedItem.SetValue(Grid.ColumnProperty, column);
 
-				if(Int32.Parse(gridItem.Key) >= finalPoint && Int32.Parse(gridItem.Key) < initialPoint)
-				{
-					//If its in the last column we have to move to next row and set column to 0, else we just go to the next column
-					if(nextGridKeyString[1] == '2')
+					//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
+					foreach (MR.Gestures.Label gridItem in Cells)
 					{
-						int nextRow =Int32.Parse(nextGridKeyString[0].ToString());
-						nextRow++;
-						nextGridKeyString = string.Empty;
-						nextGridKeyString = nextRow.ToString() + "0";
-					}
-					else
-					{
-						int nextColumn = Int32.Parse(nextGridKeyString[1].ToString());
-						nextColumn++;
-						nextGridKeyString = nextGridKeyString.Remove(1);
-						nextGridKeyString = nextGridKeyString + nextColumn.ToString();
-					}
+						if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) >= finalPoint &&
+							Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) < initialPoint) && gridItem != selectedItem)
+						{
+							//If its in the last column we have to move to next row and set column to 0, else we just go to the next column
+							if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2)
+							{
+								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+								row++;
+								gridItem.SetValue(Grid.RowProperty, row);
+								gridItem.SetValue(Grid.ColumnProperty, 0);
+							}
+							else
+							{
+								column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
+								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+								column++;
+								gridItem.SetValue(Grid.ColumnProperty, column);
+								gridItem.SetValue(Grid.RowProperty, row);
+							}
+						}
 
-					newGrid.Add(nextGridKeyString, gridItem.Value);
+					}
+					break;
 				}
 			}
 
-			removeRepeatingKeys(newGrid);
-
-			//Anything that is still in grid that wasn't deleted should be added to newGrid to have the completed grid
-			foreach(KeyValuePair<string, List<string>> item in grid)
-			{
-				newGrid.Add(item.Key, item.Value);
-			}
-
-			//We want to overrite grid so we should clear it of data now that we have all its data in newGrid
-			grid.Clear();
-
-			return newGrid;
 		}
 
 		//Basically the logic between shifting the icons left
-		Dictionary<string, List<string>> shiftLeft(int initialPoint, int finalPoint)
+		void shiftLeft(int initialPoint, int finalPoint)
 		{
-			Dictionary<string, List<string>> newGrid = new Dictionary<string, List<string>>();
-
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
 
@@ -216,235 +200,59 @@ namespace GestureSample.Views
 				strInitPoint = "0" + strInitPoint;
 			}
 
-			newGrid.Add(strFinPoint, grid[strInitPoint]);
+			List<MR.Gestures.Label> Cells = new List<MR.Gestures.Label>();
 
-			foreach (KeyValuePair<string, List<string>> gridItem in grid)
+			Cells.Add(Block1);
+			Cells.Add(Block2);
+			Cells.Add(Block3);
+
+			Cells.Add(Block4);
+			Cells.Add(Block5);
+			Cells.Add(Block6);
+
+			Cells.Add(Block7);
+			Cells.Add(Block8);
+			Cells.Add(Block9);
+
+			//The final point should now contain the block that got dropped there. The if statements is trying to find which is the inital point
+			foreach (MR.Gestures.Label selectedItem in Cells)
 			{
-				string nextGridKeyString = gridItem.Key;
-
-				if (Int32.Parse(gridItem.Key) <= finalPoint && Int32.Parse(gridItem.Key) > initialPoint)
+				if (selectedItem.GetValue(Grid.RowProperty).ToString() + selectedItem.GetValue(Grid.ColumnProperty).ToString() == strInitPoint)
 				{
-					if (nextGridKeyString[1] == '0')
+					int row = Int32.Parse(strFinPoint[0].ToString());
+					int column = Int32.Parse(strFinPoint[1].ToString());
+					selectedItem.SetValue(Grid.RowProperty, row);
+					selectedItem.SetValue(Grid.ColumnProperty, column);
+
+					//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
+					foreach (MR.Gestures.Label gridItem in Cells)
 					{
-						int nextRow = Int32.Parse(nextGridKeyString[0].ToString());
-						nextRow--;
-						nextGridKeyString = string.Empty;
-						nextGridKeyString = nextRow.ToString() + "2";
+						if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) <= finalPoint &&
+							Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) > initialPoint) &&  gridItem != selectedItem)
+						{
+							//If its in the first column we have to move to next row and set column to 2, else we just go to the next column
+							if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 0)
+							{
+								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+								row--;
+								gridItem.SetValue(Grid.RowProperty, row);
+								gridItem.SetValue(Grid.ColumnProperty, 2);
+
+							}
+							else
+							{
+								column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
+								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+								column--;
+								gridItem.SetValue(Grid.ColumnProperty, column);
+								gridItem.SetValue(Grid.RowProperty, row);
+							}
+						}
 					}
-					else
-					{
-						int nextColumn = Int32.Parse(nextGridKeyString[1].ToString());
-						nextColumn--;
-						nextGridKeyString = nextGridKeyString.Remove(1);
-						nextGridKeyString = nextGridKeyString + nextColumn.ToString();
-					}
 
-					newGrid.Add(nextGridKeyString, gridItem.Value);
-
-				}
-
-			}
-
-			removeRepeatingKeys(newGrid);
-
-			foreach (KeyValuePair<string, List<string>> item in grid)
-			{
-				newGrid.Add(item.Key, item.Value);
-			}
-
-			grid.Clear();
-
-			return newGrid;
-		}
-
-	
-		void removeRepeatingKeys(Dictionary<string, List<string>> goodGrid)
-		{
-			foreach (KeyValuePair<string, List<string>> newItem in goodGrid)
-			{
-				if (grid.ContainsKey(newItem.Key))
-				{
-					grid.Remove(newItem.Key);
+					break;
 				}
 			}
 		}
-
-		void updateXaml(Dictionary<string, List<string>> updatedGrid, bool tapped)
-		{
-			List<string> gridItem = new List<string>();
-
-			gridItem = updatedGrid["00"];
-			string color = gridItem[0];
-			Cell00.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["01"];
-			color = gridItem[0];
-			Cell01.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["02"];
-			color = gridItem[0];
-			Cell02.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["10"];
-			color = gridItem[0];
-			Cell10.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["11"];
-			color = gridItem[0];
-			Cell11.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["12"];
-			color = gridItem[0];
-			Cell12.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["20"];
-			color = gridItem[0];
-			Cell20.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["21"];
-			color = gridItem[0];
-			Cell21.BackgroundColor = Color.FromHex(color);
-
-			gridItem = updatedGrid["22"];
-			color = gridItem[0];
-			Cell22.BackgroundColor = Color.FromHex(color);
-
-			if(tapped)
-			{
-				string colorText;
-				List<string> text;
-
-				if(tappedCord == "00")
-				{
-					text = updatedGrid["00"];
-					colorText = text[1];
-
-					Cell00.Text = colorText;
-				}
-				else if (tappedCord == "01")
-				{
-					text = updatedGrid["01"];
-					colorText = text[1];
-
-					Cell01.Text = colorText;
-				}
-				else if (tappedCord == "02")
-				{
-					text = updatedGrid["02"];
-					colorText = text[1];
-
-					Cell02.Text = colorText;
-				}
-				else if (tappedCord == "10")
-				{
-					text = updatedGrid["10"];
-					colorText = text[1];
-
-					Cell10.Text = colorText;
-				}
-				else if (tappedCord == "11")
-				{
-					text = updatedGrid["11"];
-					colorText = text[1];
-
-					Cell11.Text = colorText;
-				}
-				else if (tappedCord == "12")
-				{
-					text = updatedGrid["12"];
-					colorText = text[1];
-
-					Cell12.Text = colorText;
-				}
-				else if (tappedCord == "20")
-				{
-					text = updatedGrid["20"];
-					colorText = text[1];
-
-					Cell20.Text = colorText;
-				}
-				else if (tappedCord == "21")
-				{
-					text = updatedGrid["21"];
-					colorText = text[1];
-
-					Cell21.Text = colorText;
-				}
-				else
-				{
-					text = updatedGrid["22"];
-					colorText = text[1];
-
-					Cell22.Text = colorText;
-				}
-			}
-
-			var row = Cell11.GetValue(Grid.RowProperty);
-			var column = Cell11.GetValue(Grid.ColumnProperty);
-
-			MainGrid.Children.Add(Cell00, 0, 0);
-			MainGrid.Children.Add(Cell01, 1, 0);
-			MainGrid.Children.Add(Cell02, 2, 0);
-			MainGrid.Children.Add(Cell10, 0, 1);
-			MainGrid.Children.Add(Cell11, 1, 1);
-			MainGrid.Children.Add(Cell12, 2, 1);
-			MainGrid.Children.Add(Cell20, 0, 2);
-			MainGrid.Children.Add(Cell21, 1, 2);
-			MainGrid.Children.Add(Cell22, 2, 2);
-		}
-
-		void initializeGrid()
-		{
-			/*TODO: Find a way to do this without hard coding eventually*/
-
-			List<string> gridItem00 = new List<string>();
-			List<string> gridItem01 = new List<string>();
-			List<string> gridItem02 = new List<string>();
-			List<string> gridItem10 = new List<string>();
-			List<string> gridItem11 = new List<string>();
-			List<string> gridItem12 = new List<string>();
-			List<string> gridItem20 = new List<string>();
-			List<string> gridItem21 = new List<string>();
-			List<string> gridItem22 = new List<string>();
-
-
-			gridItem00.Add("#000000");
-			gridItem00.Add("Black");
-			grid.Add("00", gridItem00);
-
-			gridItem01.Add("#32a852");
-			gridItem01.Add("Green");
-			grid.Add("01", gridItem01);
-
-			gridItem02.Add("#a83232");
-			gridItem02.Add("Red");
-			grid.Add("02", gridItem02);
-
-			gridItem10.Add("#3254a8");
-			gridItem10.Add("Blue");
-			grid.Add("10", gridItem10);
-
-			gridItem11.Add("#ffffff");
-			gridItem11.Add("White");
-			grid.Add("11", gridItem11);
-
-			gridItem12.Add("#a8a832");
-			gridItem12.Add("Yellow");
-			grid.Add("12", gridItem12);
-
-			gridItem20.Add("#a87132");
-			gridItem20.Add("Brown");
-			grid.Add("20", gridItem20);
-
-			gridItem21.Add("#a83298");
-			gridItem21.Add("Purple");
-			grid.Add("21", gridItem21);
-
-			gridItem22.Add("#995f5f");
-			gridItem22.Add("IDK");
-			grid.Add("22", gridItem22);
-
-		}
-
 	}
 }
