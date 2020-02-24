@@ -12,39 +12,11 @@ namespace GestureSample.ViewModels
 		public static int initXCord = -1;
 		public static int inityCord = -1;
 
-		public static int tapXCord = -1;
-		public static int tapYCord = -1;
-
-
-
 		public TicTacToeViewModel()
 		{
 		}
 
-		protected override void OnTapping(MR.Gestures.TapEventArgs e)
-		{
-			base.OnTapping(e);
-
-			if (e.Touches == null) return;
-
-			if (e.Touches == null || e.Touches.Length == 0)
-			{
-				return;
-			}
-
-			tapXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
-			tapYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
-
-			if (Device.RuntimePlatform == Device.macOS) // Mac has 0/0 in the LOWER left corner
-			{
-				tapYCord = 2 - tapYCord;              // so I need to have a reference to XF and platform specific code in the VM
-
-			}
-
-			
-		}
-
-
+		//Used to get the final point
 		protected override void OnPanning(MR.Gestures.PanEventArgs e)
 		{
 			base.OnPanning(e);
@@ -57,6 +29,7 @@ namespace GestureSample.ViewModels
 			finalXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
 			finalYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
 
+			//Checks if point isn't valid, if it isn't valid set them -1 since thats how we check them in GridXaml.
 			if (initXCord < 0 || initXCord > 2 || inityCord < 0 || inityCord > 2 || finalXCord < 0 || finalXCord > 2 || finalYCord < 0 || finalYCord > 2)
 			{
 				initXCord = -1;
@@ -67,6 +40,7 @@ namespace GestureSample.ViewModels
 
 		}
 
+		//Just used to get the initial point
 		protected override void OnLongPressing(MR.Gestures.LongPressEventArgs e)
 		{
 			base.OnLongPressing(e);

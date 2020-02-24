@@ -54,7 +54,7 @@
                       TextColor="White"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block2" 
                       mr:Grid.Row="0" 
@@ -64,7 +64,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block3" 
                       mr:Grid.Row="0" 
@@ -74,7 +74,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block4" 
                       mr:Grid.Row="1" 
@@ -84,7 +84,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block5" 
                       mr:Grid.Row="1" 
@@ -94,7 +94,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block6" 
                       mr:Grid.Row="1"
@@ -104,7 +104,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block7" 
                       mr:Grid.Row="2" 
@@ -114,6 +114,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block8" 
                       mr:Grid.Row="2"
@@ -123,7 +124,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block9" 
                       mr:Grid.Row="2" 
@@ -133,7 +134,7 @@
                       TextColor="Black"
                       Panning="Image_Panning" 
                       Panned="tradeImages"
-                      Tapped="tappedGrid"
+                      LongPressing="longPressing"
                       />
         </mr:Grid>
     </RelativeLayout>

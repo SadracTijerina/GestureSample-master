@@ -12,16 +12,22 @@ namespace GestureSample.Views
 		public int initXCord;
 		public int initYCord;
 
-		public string tappedCord;
-
 		public GridXaml()
 		{
 			InitializeComponent();
 		}
 
-		void tappedGrid(object sender, MR.Gestures.TapEventArgs e)
+		//This is used to let the user know when he can move the block
+		void longPressing(object sender, MR.Gestures.PanEventArgs e)
 		{
-			tappedCord = TicTacToeViewModel.tapYCord.ToString() + TicTacToeViewModel.tapXCord.ToString();
+			var label = e.Sender as MR.Gestures.Label;
+
+			if (label == null)
+			{
+				return;
+			}
+
+			label.FontAttributes = FontAttributes.Bold;
 		}
 
 		//This function is basically used to do the animation as we are panning
@@ -36,18 +42,18 @@ namespace GestureSample.Views
 			}
 
 			//Here we are initializing the variable s to the image that we are controlling/panning
-			var s = e.Sender as MR.Gestures.Label;
+			var label = e.Sender as MR.Gestures.Label;
 
-			if (s == null)
+			if (label == null)
 			{
 				return;
 			}
 
-			MainGrid.RaiseChild(s);
+			MainGrid.RaiseChild(label);
 
 			//These two lines is what does the animations. TotalDistance is what made the animation smooth
-			s.TranslationX += e.TotalDistance.X;
-			s.TranslationY += e.TotalDistance.Y;
+			label.TranslationX += e.TotalDistance.X;
+			label.TranslationY += e.TotalDistance.Y;
 
 			//This sets up once we try to trade images to bring it back to its original spot, due to it going past the grid length which kept causing bugs.
 			if (e.ViewPosition.Y > MainGrid.Height)
@@ -58,6 +64,7 @@ namespace GestureSample.Views
 			}
 
 			//TODO: Shuffle the rest of the blocks as we are panning one image if possible
+
 		}
 
 		//This is called after panning is done, to update the grid
@@ -71,20 +78,22 @@ namespace GestureSample.Views
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
 
-			var s = e.Sender as MR.Gestures.Label;
+			var label = e.Sender as MR.Gestures.Label;
 
 			//If the user doesn't have an image selected we don't want to try and shuffle the blocks
-			if (s == null)
+			if (label == null)
 			{
 				return;
 			}
+
+			label.FontAttributes = FontAttributes.None;
 
 			//if the points are equal just move the block back to its intial block since in some occasions it would be hovering over another grid item since it wasn't fully dragged over there. 
 			//As well as check if we went past the grid length we should just go back to its position since it would struggle when dealing with the length, not width
 			if ( finalYCord < 0 || finalYCord > 2 || (initXCord == finalXCord && initYCord == finalYCord) )
 			{
-				s.TranslationX = initXCord;
-				s.TranslationY = initYCord;
+				label.TranslationX = initXCord;
+				label.TranslationY = initYCord;
 				return;
 			}
 
@@ -103,8 +112,8 @@ namespace GestureSample.Views
 			}
 
 			//This sets the image to the final grid spot it was dropped since visually it wouldn't go to its dropped location
-			s.TranslationX = finalXCord;
-			s.TranslationY = finalYCord;
+			label.TranslationX = finalXCord;
+			label.TranslationY = finalYCord;
 
 			TicTacToeViewModel.inityCord = -1;
 			TicTacToeViewModel.finalYCord = -1;
