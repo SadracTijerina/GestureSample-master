@@ -17,8 +17,26 @@ namespace GestureSample.Views
 			InitializeComponent();
 		}
 
+		//This is an animation used to inform the user when the block is ready to get moved
+		async void shakeLabel(object sender, MR.Gestures.Label label)
+		{
+			uint timeout = 25;
+
+
+			if (label == null)
+			{
+				return;
+			}
+
+			await label.TranslateTo(-5, 0, timeout);
+
+			await label.TranslateTo(5, 0, timeout);
+
+			label.TranslationX = 0;
+		}
+
 		//This is used to let the user know when he can move the block
-		void longPressing(object sender, MR.Gestures.PanEventArgs e)
+		void longPressing(object sender, MR.Gestures.LongPressEventArgs e)
 		{
 			var label = e.Sender as MR.Gestures.Label;
 
@@ -27,7 +45,7 @@ namespace GestureSample.Views
 				return;
 			}
 
-			label.FontAttributes = FontAttributes.Bold;
+			shakeLabel(sender, label);
 		}
 
 		//This function is basically used to do the animation as we are panning
@@ -85,8 +103,6 @@ namespace GestureSample.Views
 			{
 				return;
 			}
-
-			label.FontAttributes = FontAttributes.None;
 
 			//if the points are equal just move the block back to its intial block since in some occasions it would be hovering over another grid item since it wasn't fully dragged over there. 
 			//As well as check if we went past the grid length we should just go back to its position since it would struggle when dealing with the length, not width
@@ -263,5 +279,7 @@ namespace GestureSample.Views
 				}
 			}
 		}
+
 	}
+
 }
