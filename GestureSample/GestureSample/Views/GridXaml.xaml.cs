@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using GestureSample.ViewModels;
+using System.Threading.Tasks;
 
 namespace GestureSample.Views
 {
@@ -12,9 +13,25 @@ namespace GestureSample.Views
 		public int initXCord;
 		public int initYCord;
 
+		List<Label> gridBlocks = new List<Label>();
+
+		int prevFinalPoint = Int32.Parse(TicTacToeViewModel.finalCoordinatesString);
+
+
 		public GridXaml()
 		{
 			InitializeComponent();
+
+			gridBlocks.Add(Block1);
+			gridBlocks.Add(Block2);
+			gridBlocks.Add(Block3);
+			gridBlocks.Add(Block4);
+			gridBlocks.Add(Block5);
+			gridBlocks.Add(Block6);
+			gridBlocks.Add(Block7);
+			gridBlocks.Add(Block8);
+			gridBlocks.Add(Block9);
+
 		}
 
 		//This is an animation used to inform the user when the block is ready to get moved
@@ -93,27 +110,81 @@ namespace GestureSample.Views
 
 			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
 
-			if (initialPoint > finalPoint)
+			if (initialPoint > finalPoint && prevFinalPoint != finalPoint)
 			{
+				shiftRightAnimation(initialPoint, finalPoint, label);
 			}
-			else if (initialPoint < finalPoint)
+			else if (initialPoint < finalPoint && prevFinalPoint != finalPoint)
 			{
+				shiftLeftAnimation(initialPoint, finalPoint, label);
 			}
+
+			prevFinalPoint = finalPoint;
 		}
 
 		//Used to shift icons while dragging the icon thats intended to get dropped
 		void shiftLeftAnimation(int initialPoint, int finalPoint, MR.Gestures.Label label)
 		{
+			////We cant have a label move two times in the same direction in terms of columns in one drag. 
+			int row, column;
 
+			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
+			foreach (MR.Gestures.Label gridItem in gridBlocks)
+			{
+				if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) <= finalPoint &&
+					Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) > initialPoint) && gridItem != label)
+				{
+					//	If its in the first column we have to move to next row and set column to 2, else we just go to the next column
+					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 0)
+					{
+						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+						row--;
+						gridItem.SetValue(Grid.RowProperty, row);
+						gridItem.SetValue(Grid.ColumnProperty, 2);
+					} else {
+						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
+						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+						column--;
+						gridItem.SetValue(Grid.ColumnProperty, column);
+						gridItem.SetValue(Grid.RowProperty, row);
+					}
+				}
+			}
 		}
 
 		//Used to shift icons while dragging the icon thats intended to get dropped
 		void shiftRightAnimation(int initialPoint, int finalPoint, MR.Gestures.Label label)
 		{
+			////We cant have a label move two times in the same direction in terms of columns in one drag. 
+			int row, column;
 
+			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
+			foreach (MR.Gestures.Label gridItem in gridBlocks)
+			{
+				if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) >= finalPoint &&
+					Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) < initialPoint) && gridItem != label)
+				{
+					//	If its in the first column we have to move to next row and set column to 2, else we just go to the next column
+					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2)
+					{
+						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+						row++;
+						gridItem.SetValue(Grid.RowProperty, row);
+						gridItem.SetValue(Grid.ColumnProperty, 0);
+					}
+					else
+					{
+						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
+						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+						column++;
+						gridItem.SetValue(Grid.ColumnProperty, column);
+						gridItem.SetValue(Grid.RowProperty, row);
+					}
+				}
+			}
 		}
 	
-		//This is called after panning is done, to update the grid
+		//This is called after panning is done, to update the block that got dropped
 		void tradeImages(object sender, MR.Gestures.PanEventArgs e)
 		{
 
@@ -123,6 +194,12 @@ namespace GestureSample.Views
 
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
+
+			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
+			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
+
+			string strFinPoint = finalPoint.ToString();
+			string strInitPoint = initialPoint.ToString();
 
 			var label = e.Sender as MR.Gestures.Label;
 
@@ -141,21 +218,17 @@ namespace GestureSample.Views
 				return;
 			}
 
-			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
-			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
-
-
-			//If the initial points is greater than the final points we shifting to the right
-			if (initialPoint > finalPoint)
+			//the only way the string is length 1 is if the point is in the first row causing the first number of int to be 0
+			if (strFinPoint.Length == 1)
 			{
-				shiftRight(initialPoint, finalPoint, label);
-			}
-			else if (initialPoint < finalPoint)
-			{
-				shiftLeft(initialPoint, finalPoint, label);
+				strFinPoint = "0" + strFinPoint;
 			}
 
-			//This sets the image to the final grid spot it was dropped since visually it wouldn't go to its dropped location
+			//This sets the block thats getting dragged to its final spot it was dropped in
+			int row = Int32.Parse(strFinPoint[0].ToString());
+			int column = Int32.Parse(strFinPoint[1].ToString());
+			label.SetValue(Grid.RowProperty, row);
+			label.SetValue(Grid.ColumnProperty, column);
 			label.TranslationX = finalXCord;
 			label.TranslationY = finalYCord;
 
@@ -165,132 +238,6 @@ namespace GestureSample.Views
 			TicTacToeViewModel.finalXCord = -1;
 		}
 
-		//Basically the logic between shifting the icons right
-		void shiftRight(int initialPoint, int finalPoint, MR.Gestures.Label label)
-		{
-			string strFinPoint = finalPoint.ToString();
-			string strInitPoint = initialPoint.ToString();
-
-			//the only way the string is length 1 is if the point is in the first row causing the first number of int to be 0
-			if(strFinPoint.Length == 1)
-			{
-				strFinPoint = "0" + strFinPoint;
-			}
-			if(strInitPoint.Length == 1)
-			{
-				strInitPoint = "0" + strInitPoint;
-			}
-
-			List<MR.Gestures.Label> Cells = new List<MR.Gestures.Label>();
-
-			Cells.Add(Block1);
-			Cells.Add(Block2);
-			Cells.Add(Block3);
-
-			Cells.Add(Block4);
-			Cells.Add(Block5);
-			Cells.Add(Block6);
-
-			Cells.Add(Block7);
-			Cells.Add(Block8);
-			Cells.Add(Block9);
-
-
-			//This sets the block thats getting dragged to its final spot it was dropped in
-			int row = Int32.Parse(strFinPoint[0].ToString());
-			int column = Int32.Parse(strFinPoint[1].ToString());
-			label.SetValue(Grid.RowProperty, row);
-			label.SetValue(Grid.ColumnProperty, column);
-
-			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
-			foreach (MR.Gestures.Label gridItem in Cells)
-			{
-				if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) >= finalPoint &&
-					Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) < initialPoint) && gridItem != label)
-				{
-					//If its in the last column we have to move to next row and set column to 0, else we just go to the next column
-					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2)
-					{
-						row = Int32.Parse(gridItem.GetValue(Xamarin.Forms.Grid.RowProperty).ToString());
-						row++;
-						gridItem.SetValue(Xamarin.Forms.Grid.RowProperty, row);
-						gridItem.SetValue(Xamarin.Forms.Grid.ColumnProperty, 0);
-					}
-					else
-					{
-						column = Int32.Parse(gridItem.GetValue(Xamarin.Forms.Grid.ColumnProperty).ToString());
-						row = Int32.Parse(gridItem.GetValue(Xamarin.Forms.Grid.RowProperty).ToString());
-						column++;
-						gridItem.SetValue(Xamarin.Forms.Grid.ColumnProperty, column);
-						gridItem.SetValue(Xamarin.Forms.Grid.RowProperty, row);
-					}
-				}
-			}
-		}
-
-		//Basically the logic between shifting the icons left
-		void shiftLeft(int initialPoint, int finalPoint, MR.Gestures.Label label)
-		{
-			string strFinPoint = finalPoint.ToString();
-			string strInitPoint = initialPoint.ToString();
-
-			if (strFinPoint.Length == 1)
-			{
-				strFinPoint = "0" + strFinPoint;
-			}
-			if (strInitPoint.Length == 1)
-			{
-				strInitPoint = "0" + strInitPoint;
-			}
-
-			List<MR.Gestures.Label> Cells = new List<MR.Gestures.Label>();
-
-			Cells.Add(Block1);
-			Cells.Add(Block2);
-			Cells.Add(Block3);
-
-			Cells.Add(Block4);
-			Cells.Add(Block5);
-			Cells.Add(Block6);
-
-			Cells.Add(Block7);
-			Cells.Add(Block8);
-			Cells.Add(Block9);
-
-
-			//This sets the block thats getting dragged to its final spot it was dropped in
-			int row = Int32.Parse(strFinPoint[0].ToString());
-			int column = Int32.Parse(strFinPoint[1].ToString());
-			label.SetValue(Grid.RowProperty, row);
-			label.SetValue(Grid.ColumnProperty, column);
-
-
-			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
-			foreach (MR.Gestures.Label gridItem in Cells)
-			{
-				if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) <= finalPoint &&
-					Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) > initialPoint) && gridItem != label)
-				{
-				//	If its in the first column we have to move to next row and set column to 2, else we just go to the next column
-					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 0)
-					{
-						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-						row--;
-						gridItem.SetValue(Grid.RowProperty, row);
-						gridItem.SetValue(Grid.ColumnProperty, 2);
-
-					}
-					else
-					{
-						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
-						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-						column--;
-						gridItem.SetValue(Grid.ColumnProperty, column);
-						gridItem.SetValue(Grid.RowProperty, row);
-					}
-				}
-			}
-		}
 	}
 
 }

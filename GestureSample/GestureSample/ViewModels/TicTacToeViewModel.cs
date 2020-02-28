@@ -8,6 +8,7 @@ namespace GestureSample.ViewModels
 	{
 		public static int finalXCord = -1;
 		public static int finalYCord = -1;
+		public static string finalCoordinatesString = "-1";
 
 		public static int initXCord = -1;
 		public static int inityCord = -1;
@@ -29,6 +30,8 @@ namespace GestureSample.ViewModels
 			finalXCord = (int)(e.Touches[0].X * 3 / e.ViewPosition.Width);
 			finalYCord = (int)(e.Touches[0].Y * 3 / e.ViewPosition.Height);
 
+			finalCoordinatesString = finalYCord.ToString() + finalXCord.ToString();
+
 			//Checks if point isn't valid, if it isn't valid set them -1 since thats how we check them in GridXaml.
 			if (initXCord < 0 || initXCord > 2 || inityCord < 0 || inityCord > 2 || finalXCord < 0 || finalXCord > 2 || finalYCord < 0 || finalYCord > 2)
 			{
@@ -36,6 +39,7 @@ namespace GestureSample.ViewModels
 				inityCord = -1;
 				finalXCord = -1;
 				finalYCord = -1;
+				finalCoordinatesString = "-1";
 			}
 
 		}
