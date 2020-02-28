@@ -53,6 +53,8 @@ namespace GestureSample.Views
 		{
 			initXCord = TicTacToeViewModel.initXCord;
 			initYCord = TicTacToeViewModel.inityCord;
+			finalXCord = TicTacToeViewModel.finalXCord;
+			finalYCord = TicTacToeViewModel.finalYCord;
 
 			if (initXCord == -1 || initYCord == -1)
 			{
@@ -69,7 +71,7 @@ namespace GestureSample.Views
 
 			MainGrid.RaiseChild(label);
 
-			//These two lines is what does the animations. TotalDistance is what made the animation smooth
+			//These two lines is what does the animations. TotalDistance is what made the animation smooth. += Is what assigns a handler to an event
 			label.TranslationX += e.TotalDistance.X;
 			label.TranslationY += e.TotalDistance.Y;
 
@@ -82,9 +84,35 @@ namespace GestureSample.Views
 			}
 
 			//TODO: Shuffle the rest of the blocks as we are panning one image if possible
+			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
+
+			if (finalXCord < 0 || finalXCord < 0)
+			{
+				return;
+			}
+
+			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
+
+			if (initialPoint > finalPoint)
+			{
+			}
+			else if (initialPoint < finalPoint)
+			{
+			}
+		}
+
+		//Used to shift icons while dragging the icon thats intended to get dropped
+		void shiftLeftAnimation(int initialPoint, int finalPoint, MR.Gestures.Label label)
+		{
 
 		}
 
+		//Used to shift icons while dragging the icon thats intended to get dropped
+		void shiftRightAnimation(int initialPoint, int finalPoint, MR.Gestures.Label label)
+		{
+
+		}
+	
 		//This is called after panning is done, to update the grid
 		void tradeImages(object sender, MR.Gestures.PanEventArgs e)
 		{
@@ -120,11 +148,11 @@ namespace GestureSample.Views
 			//If the initial points is greater than the final points we shifting to the right
 			if (initialPoint > finalPoint)
 			{
-				shiftRight(initialPoint, finalPoint);
+				shiftRight(initialPoint, finalPoint, label);
 			}
 			else if (initialPoint < finalPoint)
 			{
-				shiftLeft(initialPoint, finalPoint);
+				shiftLeft(initialPoint, finalPoint, label);
 			}
 
 			//This sets the image to the final grid spot it was dropped since visually it wouldn't go to its dropped location
@@ -135,11 +163,10 @@ namespace GestureSample.Views
 			TicTacToeViewModel.finalYCord = -1;
 			TicTacToeViewModel.initXCord = -1;
 			TicTacToeViewModel.finalXCord = -1;
-
 		}
 
 		//Basically the logic between shifting the icons right
-		void shiftRight(int initialPoint, int finalPoint)
+		void shiftRight(int initialPoint, int finalPoint, MR.Gestures.Label label)
 		{
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
@@ -168,50 +195,41 @@ namespace GestureSample.Views
 			Cells.Add(Block8);
 			Cells.Add(Block9);
 
-			//The final point should now contain the block that got dropped there. The if statements is trying to find which is the inital point
-			foreach (MR.Gestures.Label selectedItem in Cells)
+
+			//This sets the block thats getting dragged to its final spot it was dropped in
+			int row = Int32.Parse(strFinPoint[0].ToString());
+			int column = Int32.Parse(strFinPoint[1].ToString());
+			label.SetValue(Grid.RowProperty, row);
+			label.SetValue(Grid.ColumnProperty, column);
+
+			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
+			foreach (MR.Gestures.Label gridItem in Cells)
 			{
-				if(selectedItem.GetValue(Grid.RowProperty).ToString() + selectedItem.GetValue(Grid.ColumnProperty).ToString() == strInitPoint)
-				{ 
-					
-					int row = Int32.Parse(strFinPoint[0].ToString());
-					int column = Int32.Parse(strFinPoint[1].ToString());
-					selectedItem.SetValue(Grid.RowProperty, row);
-					selectedItem.SetValue(Grid.ColumnProperty, column);
-
-					//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
-					foreach (MR.Gestures.Label gridItem in Cells)
+				if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) >= finalPoint &&
+					Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) < initialPoint) && gridItem != label)
+				{
+					//If its in the last column we have to move to next row and set column to 0, else we just go to the next column
+					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2)
 					{
-						if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) >= finalPoint &&
-							Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) < initialPoint) && gridItem != selectedItem)
-						{
-							//If its in the last column we have to move to next row and set column to 0, else we just go to the next column
-							if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2)
-							{
-								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-								row++;
-								gridItem.SetValue(Grid.RowProperty, row);
-								gridItem.SetValue(Grid.ColumnProperty, 0);
-							}
-							else
-							{
-								column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
-								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-								column++;
-								gridItem.SetValue(Grid.ColumnProperty, column);
-								gridItem.SetValue(Grid.RowProperty, row);
-							}
-						}
-
+						row = Int32.Parse(gridItem.GetValue(Xamarin.Forms.Grid.RowProperty).ToString());
+						row++;
+						gridItem.SetValue(Xamarin.Forms.Grid.RowProperty, row);
+						gridItem.SetValue(Xamarin.Forms.Grid.ColumnProperty, 0);
 					}
-					break;
+					else
+					{
+						column = Int32.Parse(gridItem.GetValue(Xamarin.Forms.Grid.ColumnProperty).ToString());
+						row = Int32.Parse(gridItem.GetValue(Xamarin.Forms.Grid.RowProperty).ToString());
+						column++;
+						gridItem.SetValue(Xamarin.Forms.Grid.ColumnProperty, column);
+						gridItem.SetValue(Xamarin.Forms.Grid.RowProperty, row);
+					}
 				}
 			}
-
 		}
 
 		//Basically the logic between shifting the icons left
-		void shiftLeft(int initialPoint, int finalPoint)
+		void shiftLeft(int initialPoint, int finalPoint, MR.Gestures.Label label)
 		{
 			string strFinPoint = finalPoint.ToString();
 			string strInitPoint = initialPoint.ToString();
@@ -239,47 +257,40 @@ namespace GestureSample.Views
 			Cells.Add(Block8);
 			Cells.Add(Block9);
 
-			//The final point should now contain the block that got dropped there. The if statements is trying to find which is the inital point
-			foreach (MR.Gestures.Label selectedItem in Cells)
+
+			//This sets the block thats getting dragged to its final spot it was dropped in
+			int row = Int32.Parse(strFinPoint[0].ToString());
+			int column = Int32.Parse(strFinPoint[1].ToString());
+			label.SetValue(Grid.RowProperty, row);
+			label.SetValue(Grid.ColumnProperty, column);
+
+
+			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
+			foreach (MR.Gestures.Label gridItem in Cells)
 			{
-				if (selectedItem.GetValue(Grid.RowProperty).ToString() + selectedItem.GetValue(Grid.ColumnProperty).ToString() == strInitPoint)
+				if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) <= finalPoint &&
+					Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) > initialPoint) && gridItem != label)
 				{
-					int row = Int32.Parse(strFinPoint[0].ToString());
-					int column = Int32.Parse(strFinPoint[1].ToString());
-					selectedItem.SetValue(Grid.RowProperty, row);
-					selectedItem.SetValue(Grid.ColumnProperty, column);
-
-					//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
-					foreach (MR.Gestures.Label gridItem in Cells)
+				//	If its in the first column we have to move to next row and set column to 2, else we just go to the next column
+					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 0)
 					{
-						if ((Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) <= finalPoint &&
-							Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString() + gridItem.GetValue(Grid.ColumnProperty).ToString()) > initialPoint) &&  gridItem != selectedItem)
-						{
-							//If its in the first column we have to move to next row and set column to 2, else we just go to the next column
-							if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 0)
-							{
-								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-								row--;
-								gridItem.SetValue(Grid.RowProperty, row);
-								gridItem.SetValue(Grid.ColumnProperty, 2);
+						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+						row--;
+						gridItem.SetValue(Grid.RowProperty, row);
+						gridItem.SetValue(Grid.ColumnProperty, 2);
 
-							}
-							else
-							{
-								column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
-								row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-								column--;
-								gridItem.SetValue(Grid.ColumnProperty, column);
-								gridItem.SetValue(Grid.RowProperty, row);
-							}
-						}
 					}
-
-					break;
+					else
+					{
+						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
+						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
+						column--;
+						gridItem.SetValue(Grid.ColumnProperty, column);
+						gridItem.SetValue(Grid.RowProperty, row);
+					}
 				}
 			}
 		}
-
 	}
 
 }
