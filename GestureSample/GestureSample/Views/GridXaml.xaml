@@ -53,7 +53,7 @@
                       Text="Black"
                       TextColor="White"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block2" 
@@ -63,7 +63,7 @@
                       Text="Green"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block3" 
@@ -73,7 +73,7 @@
                       Text="Red"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block4" 
@@ -83,7 +83,7 @@
                       Text="Blue"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block5" 
@@ -93,7 +93,7 @@
                       Text="White"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block6" 
@@ -103,7 +103,7 @@
                       Text="Yellow"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block7" 
@@ -113,7 +113,7 @@
                       Text="Orange"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block8" 
@@ -123,7 +123,7 @@
                       Text="Purple"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
             <mr:Label x:Name="Block9" 
@@ -133,7 +133,7 @@
                       Text="IDK"
                       TextColor="Black"
                       Panning="Image_Panning" 
-                      Panned="tradeImages"
+                      Panned="updateBlockDragged"
                       LongPressing="longPressing"
                       />
         </mr:Grid>
