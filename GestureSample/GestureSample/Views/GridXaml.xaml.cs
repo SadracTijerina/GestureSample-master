@@ -107,17 +107,21 @@ namespace GestureSample.Views
 			prevFinalPoint = finalPoint;
 
 			//This is used to update the initial point so it stops blocks from shifting that don't need to be shifted, therefore causeing overlap, page 246 of BuJo
-			string initialUpdatedStringPoint = prevFinalPoint.ToString();
+			string initialUpdatedStringPoint = prevFinalPoint.ToString(); ;
+
 			if (initialUpdatedStringPoint.Length == 1)
 				initialUpdatedStringPoint = "0" + initialUpdatedStringPoint;
 			
 			TicTacToeViewModel.inityCord = Int32.Parse(initialUpdatedStringPoint[0].ToString());
 			TicTacToeViewModel.initXCord = Int32.Parse(initialUpdatedStringPoint[1].ToString());
+
 		}
 
 		//Used to shift and update icons while dragging the icon thats intended to get dropped
 		void shiftLeftAnimation(int initialPoint, int finalPoint, MR.Gestures.Label label)
 		{
+			Console.WriteLine("Initial Point: " + initialPoint + " Final Point: " + finalPoint);
+
 			int row, column;
 
 			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
@@ -145,6 +149,8 @@ namespace GestureSample.Views
 		//Used to shift icons and update while dragging the icon thats intended to get dropped
 		void shiftRightAnimation(int initialPoint, int finalPoint, MR.Gestures.Label label)
 		{
+			Console.WriteLine("Initial Point: " + initialPoint + " Final Point: " + finalPoint);
+
 			int row, column;
 
 			//Now this checks the rest of the items in grid to move to the right if its between the final point and less than the initial point
@@ -156,6 +162,7 @@ namespace GestureSample.Views
 					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2) {
 						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
 						row++;
+						gridItem.SetValue(Grid.RowProperty, row);
 						gridItem.SetValue(Grid.ColumnProperty, 0);
 					} else {
 						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
