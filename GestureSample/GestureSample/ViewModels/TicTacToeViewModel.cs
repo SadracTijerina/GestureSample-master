@@ -41,10 +41,9 @@ namespace GestureSample.ViewModels
 				finalYCord = -1;
 				finalCoordinatesString = "-1";
 			}
-
 		}
 
-		//Just used to get the initial point
+		//Used to get the initial point
 		protected override void OnLongPressing(MR.Gestures.LongPressEventArgs e)
 		{
 			base.OnLongPressing(e);
