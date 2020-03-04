@@ -72,11 +72,9 @@ namespace GestureSample.Views
 			finalXCord = TicTacToeViewModel.finalXCord;
 			finalYCord = TicTacToeViewModel.finalYCord;
 
-
 			if (initXCord == -1 || initYCord == -1) return;
 
 			int initialPoint = Int32.Parse(initYCord.ToString() + initXCord.ToString());
-
 
 			//Here we are initializing the variable s to the image that we are controlling/panning
 			var label = e.Sender as MR.Gestures.Label;
@@ -100,10 +98,7 @@ namespace GestureSample.Views
 
 			int finalPoint = Int32.Parse(finalYCord.ToString() + finalXCord.ToString());
 
-			/*
-				We are rotating the rest of the blocks as we are panning a block. Still running into issues
-				TODO: Need to FIX the shifting block animations. Some blocks stop shifting and just overlap other blocks
-			*/
+			//We are rotating the rest of the blocks as we are panning a block.
 			if (initialPoint > finalPoint && prevFinalPoint != finalPoint)
 				shiftRightAnimation(initialPoint, finalPoint, label);
 			else if (initialPoint < finalPoint && prevFinalPoint != finalPoint) 
@@ -114,9 +109,8 @@ namespace GestureSample.Views
 			//This is used to update the initial point so it stops blocks from shifting that don't need to be shifted, therefore causeing overlap, page 246 of BuJo
 			string initialUpdatedStringPoint = prevFinalPoint.ToString();
 			if (initialUpdatedStringPoint.Length == 1)
-			{
 				initialUpdatedStringPoint = "0" + initialUpdatedStringPoint;
-			}
+			
 			TicTacToeViewModel.inityCord = Int32.Parse(initialUpdatedStringPoint[0].ToString());
 			TicTacToeViewModel.initXCord = Int32.Parse(initialUpdatedStringPoint[1].ToString());
 		}
@@ -134,17 +128,13 @@ namespace GestureSample.Views
 					//	If its in the first column we have to move to next row and set column to 0, else we just go to the next column
 					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 0) {
 						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-						Console.WriteLine("\nBefore -- row " + gridItem.Text + ": " + row);
 						row--;
-						Console.WriteLine("\nAfter -- row " + gridItem.Text + ": " + row);
 						gridItem.SetValue(Grid.RowProperty, row);
 						gridItem.SetValue(Grid.ColumnProperty, 2);
 					} else {
 						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
 						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-						Console.WriteLine("\nBefore -- column " + gridItem.Text + ": " + column);
 						column--;
-						Console.WriteLine("\nAfter -- column " + gridItem.Text + ": " + column);
 						gridItem.SetValue(Grid.ColumnProperty, column);
 						gridItem.SetValue(Grid.RowProperty, row);
 					}
@@ -165,16 +155,12 @@ namespace GestureSample.Views
 					//	If its in the first column we have to move to the previous row and set column to 2, else we just go to the next column
 					if (Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString()) == 2) {
 						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-						Console.WriteLine("\nBefore ++ row " + gridItem.Text + ": " + row);
 						row++;
-						Console.WriteLine("\nAfter ++ row " + gridItem.Text + ": " + row); gridItem.SetValue(Grid.RowProperty, row);
 						gridItem.SetValue(Grid.ColumnProperty, 0);
 					} else {
 						column = Int32.Parse(gridItem.GetValue(Grid.ColumnProperty).ToString());
 						row = Int32.Parse(gridItem.GetValue(Grid.RowProperty).ToString());
-						Console.WriteLine("\nBefore ++ column " + gridItem.Text + ": " + column);
 						column++;
-						Console.WriteLine("\nAfter ++ column " + gridItem.Text + ": " + column); 
 						gridItem.SetValue(Grid.ColumnProperty, column);
 						gridItem.SetValue(Grid.RowProperty, row);
 					}
@@ -206,16 +192,6 @@ namespace GestureSample.Views
 
 			//If the user doesn't have an image selected we can't put back the block to its final position
 			if (label == null) return;
-			
-			/*
-				if the points are equal just move the block back to its intial block since in some occasions it would be hovering over another grid item since it wasn't fully dragged over there. 
-				As well as check if we went past the grid length we should just go back to its position since it would struggle when dealing with the length, not width
-			*/
-			//if ( finalYCord < 0 || finalYCord > 2 || (initXCord == finalXCord && initYCord == finalYCord) ) { 
-			//	label.TranslationX = initXCord;
-			//	label.TranslationY = initYCord;
-			//	return;
-			//}
 
 			//This sets the block thats getting dragged to its final spot it was dropped in
 			int row = Int32.Parse(stringFinPoint[0].ToString());
@@ -225,6 +201,7 @@ namespace GestureSample.Views
 			label.TranslationX = finalXCord;
 			label.TranslationY = finalYCord;
 
+			//resets everything after getting dropped
 			TicTacToeViewModel.inityCord = -1;
 			TicTacToeViewModel.finalYCord = -1;
 			TicTacToeViewModel.initXCord = -1;
