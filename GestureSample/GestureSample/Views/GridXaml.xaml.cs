@@ -36,30 +36,25 @@ namespace GestureSample.Views
 		//This is an animation used to inform the user when the block is ready to get moved
 		async void shakeLabel(object sender, MR.Gestures.Label label)
 		{
-			uint timeout = 25;
-
+			uint timeout = 50;
 
 			if (label == null) return;
 
-
 			await label.TranslateTo(-10, 0, timeout);
-
 			await label.TranslateTo(10, 0, timeout);
 
 			await label.TranslateTo(-5, 0, timeout);
-
 			await label.TranslateTo(5, 0, timeout);
 
 			label.TranslationX = 0;
 		}
 
-		//This is used to let the user know when he can move the block
+		////This is used to let the user know when he can move the block
 		void longPressing(object sender, MR.Gestures.LongPressEventArgs e)
 		{
 			var label = e.Sender as MR.Gestures.Label;
 
 			if (label == null) return;
-			
 
 			shakeLabel(sender, label);
 		}
